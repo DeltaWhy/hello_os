@@ -1,8 +1,8 @@
 CC = gcc
-CFLAGS = -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs
+CFLAGS = -std=c99 -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs
 LD = ld
 
-OBJS = kernel.o loader.o
+OBJS = kernel.o io.o loader.o
 
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img
