@@ -13,6 +13,7 @@ $(FLOPPY_IMG): $(KERNELFN)
 	mkdir floppy
 	sudo mount $@ floppy -o loop,umask=000
 	cp $< floppy/boot
+	sleep 1
 	sudo umount floppy
 	rmdir floppy
 

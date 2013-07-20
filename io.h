@@ -5,9 +5,11 @@
 #define SCREEN_HEIGHT 26
 
 void kclear();
-void kputc(char c);
-void kputs(char * str);
+void kputc(char c, char col);
+void print(char * str);
+void cprint(char * str, char col);
+void scroll();
 extern volatile unsigned char *videoram;
 extern volatile unsigned char *cursor;
-
+extern int off_screen;
 #endif
