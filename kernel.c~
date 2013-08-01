@@ -19,6 +19,10 @@ void kmain(void)
 	init_pics(0x20, 0x28);
 	print("Jonathan's OS\n");
 	update_cursor();
+	for(int i;i<100;i++){
+		klights(4);
+		klights(0);
+	}
 	while(1){
 		char * input = keyboard();
 		if (strcheck(keysq, "help") == 1){

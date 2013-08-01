@@ -17,6 +17,5 @@ void scroll();
 int strcheck(char *, char *);
 extern volatile unsigned char *videoram;
 extern volatile unsigned char *cursor;
-extern int ccol;
-extern int crow;
+
 #endif
