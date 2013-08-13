@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -std=c99 -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs
 LD = ld
 
-OBJS = kernel.o io.o loader.o pic.o inout.o keyboard.o
+OBJS = kernel.o io.o loader.o pic.o string.o keyboard.o
 
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img

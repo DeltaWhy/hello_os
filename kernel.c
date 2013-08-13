@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include "pic.h"
 #include "io.h"
-#include "inout.h"
 #include "keyboard.h"
+#include "string.h"
 void exit(void);
 
 void kmain(void)
@@ -17,20 +17,21 @@ void kmain(void)
 	kclear();
 	print("initializing PICs...\n");
 	init_pics(0x20, 0x28);
-	print("Jonathan's OS\n");
+	cprint("Jonathan's OS\n", 2);
 	update_cursor();
 	while(1){
 		char * input = keyboard();
-		if (strcheck(keysq, "help") == 1){
-			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nexit - shut down.\n");
+		if (strcheck(input, "help") == 1){
+			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\n");
 		}
 		else if (strcheck(input, "clear") ==1)
 		{
 			kclear();
 		}
-		else if (strcheck(input, "exit") == 1)
+		else if (strcheck(input, "reboot") == 1)
 		{
 			exit();
+			print("this needs to be fixed.  BAD.");
 		}
 		else{
 			print("don't know that one\n");
