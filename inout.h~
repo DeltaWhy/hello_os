@@ -1,7 +1,0 @@
-#ifndef INOUT_H
-#define INOUT_H
-void outportb(unsigned port, unsigned val);
-
-void inportb(unsigned short port);
-
-#endif
