@@ -3,6 +3,8 @@
 #include "io.h"
 #include "keyboard.h"
 #include "string.h"
+#include "gdt.h"
+void init_gdt(void);
 void exit(void);
 
 void kmain(void)
@@ -15,6 +17,8 @@ void kmain(void)
     }
 
 	kclear();
+        print("initializing GDT...\n");
+        init_gdt();
 	print("initializing PICs...\n");
 	init_pics(0x20, 0x28);
 	cprint("Jonathan's OS\n", 2);
@@ -41,4 +45,11 @@ void kmain(void)
 void exit(void){
 	while(inportb(0x64) & 0x02);
 	outportb(0x64, 0xFE);
+}
+void init_gdt(void) {
+    /*GDT[0] = ((sizeof(gdt_descriptor) * GDT_ENTRIES - 1) & 0xFFFF)
+            | ((uint32_t)GDT) << 16;*/
+    GDT[1] = create_descriptor(0, 0xFFFFF, GDT_CODE_PL0);
+    GDT[2] = create_descriptor(0, 0xFFFFF, GDT_DATA_PL0);
+    setGdt(GDT, sizeof(GDT));
 }

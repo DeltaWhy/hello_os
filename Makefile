@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -std=c99 -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs
 LD = ld
 
-OBJS = kernel.o io.o loader.o pic.o string.o keyboard.o
+OBJS = kernel.o io.o loader.o pic.o string.o keyboard.o gdt.o setgdt.o
 
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img
@@ -10,7 +10,7 @@ FLOPPY_IMG = floppy.img
 $(FLOPPY_IMG): $(KERNELFN)
 	rm -f $@
 	cp grub_dos.img $@
-	mkdir floppy
+	mkdir -p floppy
 	sudo mount $@ floppy -o loop,umask=000
 	cp $< floppy/boot
 	sleep 1
