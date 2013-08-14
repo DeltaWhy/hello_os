@@ -1,11 +1,15 @@
 #include <stdint.h>
+#include <string.h>
 #include "pic.h"
 #include "io.h"
 #include "keyboard.h"
 #include "string.h"
 #include "gdt.h"
+#include "idt.h"
 void init_gdt(void);
+void init_idt(void);
 void exit(void);
+void _interrupt_handler(void);
 
 void kmain(void)
 {
@@ -19,6 +23,8 @@ void kmain(void)
 	kclear();
         print("initializing GDT...\n");
         init_gdt();
+        print("initializing IDT...\n");
+        init_idt();
 	print("initializing PICs...\n");
 	init_pics(0x20, 0x28);
 	cprint("Jonathan's OS\n", 2);
@@ -52,4 +58,17 @@ void init_gdt(void) {
     GDT[1] = create_descriptor(0, 0xFFFFF, GDT_CODE_PL0);
     GDT[2] = create_descriptor(0, 0xFFFFF, GDT_DATA_PL0);
     setGdt(GDT, sizeof(GDT));
+}
+void init_idt(void) {
+    for (unsigned int i = 0; i < sizeof(IDT); i++) {
+        *(((char *)IDT)+i) = 0;
+    }
+    IDT[1].offset_1 = ((uint32_t)(&_interrupt_handler)) & 0xFFFF;
+    IDT[1].offset_2 = ((uint32_t)(&_interrupt_handler)) >> 16;
+    IDT[1].selector = 0x08;
+    IDT[1].type_attr = IDT_DPL0 | IDT_INT_32 | IDT_PRESENT;
+    setIdt(IDT, sizeof(IDT));
+}
+void _interrupt_handler(void) {
+    print("interrupt");
 }
