@@ -43,6 +43,11 @@ void kmain(void)
 			exit();
 			print("this needs to be fixed.  BAD.");
 		}
+                else if (strcheck(input, "interrupt") == 1)
+                {
+                    print("interrupting...\n");
+                    __asm__ __volatile__ ("int $0x1");
+                }
 		else{
 			print("don't know that one\n");
 		}
