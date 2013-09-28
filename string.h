@@ -15,6 +15,7 @@ void print(char * str);
 void cprint(char * str, char col);
 void scroll();
 int strcheck(char *, char *);
+char * itoa( int value, char * str, int base );
 extern volatile unsigned char *videoram;
 extern volatile unsigned char *cursor;
 extern int ccol;
