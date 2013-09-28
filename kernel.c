@@ -35,7 +35,7 @@ void kmain(void)
             print("> ");
 		char * input = keyboard();
 		if (strcheck(input, "help") == 1){
-			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\n");
+			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\ninterrupt - tests the interrupt system.\ncrash - attempts to divide by zero.\n");
 		}
 		else if (strcheck(input, "clear") ==1)
 		{
