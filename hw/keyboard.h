@@ -63,6 +63,8 @@ enum KBD_CMD {
     KBD_CMD_TRANSLATION = 0x40
 };
 
+void init_keyboard();
+void keyboard_irq_handler();
 char * getln();
 int scan();
 void klights();

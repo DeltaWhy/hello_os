@@ -24,10 +24,15 @@ void kmain(void)
         init_idt();
 	print("initializing PICs...\n");
 	init_pics(0x20, 0x28);
-        print("enabling timer interrupts...\n");
-        enable_irq(0);
+        print("initializing keyboard...\n");
+        init_keyboard();
+        print("enabling keyboard interrupts...\n");
+        enable_irq(1);
+        send_eoi(0);
+        __asm__ __volatile__ ("sti");
 	cprint("Jonathan's OS\n", 2);
 	update_cursor();
+        while(1); // the command prompt below stops keyboard interrupts from working
 	while(1){
             print("> ");
 		char * input = getln();

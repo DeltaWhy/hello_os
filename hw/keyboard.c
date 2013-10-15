@@ -5,6 +5,28 @@ int ccol;
 int led_stat=0;
 int crow;
 char keysq[100];
+
+void init_keyboard() {
+    // I have no idea if this is correct
+    outportb(KBD_CONTROLLER_REG, KBD_CTL_CMD_READ_CMD);
+    char cmd = inportb(KBD_CONTROLLER_REG);
+    print("keyboard command byte: 0x");
+    char cmdStr[3];
+    itoa(cmd, cmdStr, 16);
+    print(cmdStr);
+    print("\n");
+    outportb(KBD_CONTROLLER_REG, KBD_CTL_CMD_WRITE_CMD);
+    outportb(KBD_CONTROLLER_REG, cmd | KBD_CMD_KEYBOARD_INTERRUPT);
+}
+
+void keyboard_irq_handler() {
+    print("keyboard\n");
+    inportb(0x60);
+    int i = inportb(0x61);
+    outportb(0x61, i|0x80);
+    outportb(0x61, i);
+}
+
 int scan(){
 	char oldkey;
 	char key;

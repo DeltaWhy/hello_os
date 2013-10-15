@@ -40,3 +40,9 @@ void disable_irq(int irq)
     if (irq < 8) outportb(PIC1+1, ocw1&0xFF);
     else outportb(PIC2+1, ocw1>>8);
 }
+
+void send_eoi(int irq)
+{
+    if (irq >= 8) outportb(PIC2, 0x20);
+    outportb(PIC1, 0x20);
+}
