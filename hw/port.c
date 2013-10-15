@@ -1,4 +1,4 @@
-#include "inout.h"
+#include "port.h"
 
 void outportb(unsigned port, unsigned val)
 {

@@ -1,5 +1,4 @@
 .intel_syntax noprefix
-.global   _isr_wrapper
 .align   4
 
 .macro ISR_NOERRCODE irq
@@ -51,14 +50,22 @@ ISR_NOERRCODE 28
 ISR_NOERRCODE 29
 ISR_NOERRCODE 30
 ISR_NOERRCODE 31
-
-_isr_wrapper:
-    cli
-    pusha
-    call    _interrupt_handler
-    popa
-    sti
-    iret
+ISR_NOERRCODE 32
+ISR_NOERRCODE 33
+ISR_NOERRCODE 34
+ISR_NOERRCODE 35
+ISR_NOERRCODE 36
+ISR_NOERRCODE 37
+ISR_NOERRCODE 38
+ISR_NOERRCODE 39
+ISR_NOERRCODE 40
+ISR_NOERRCODE 41
+ISR_NOERRCODE 42
+ISR_NOERRCODE 43
+ISR_NOERRCODE 44
+ISR_NOERRCODE 45
+ISR_NOERRCODE 46
+ISR_NOERRCODE 47
 
 .global _isr_common_stub
 _isr_common_stub:

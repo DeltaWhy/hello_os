@@ -1,5 +1,6 @@
 #ifndef IDT_H
 #define IDT_H
+#include <stdint.h>
 
 #define IDT_TASK_32 0x5
 #define IDT_INT_16 0x6
@@ -23,4 +24,5 @@ struct IDTDescr{
 
 struct IDTDescr IDT[48];
 void setIdt(void *ptr, uint16_t size);
+void init_idt();
 #endif

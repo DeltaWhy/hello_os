@@ -1,6 +1,5 @@
-
-#include "io.h"
-#include "string.h"
+#include "port.h"
+#include "../string.h"
 int ccol;
 int led_stat=0;
 int crow;

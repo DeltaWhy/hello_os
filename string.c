@@ -1,4 +1,4 @@
-#include "io.h"
+#include "hw/port.h"
 #include "string.h"
 volatile unsigned char *videoram = (unsigned char *)0xB8000;
 volatile unsigned char *cursor = (unsigned char *)0xB8000;

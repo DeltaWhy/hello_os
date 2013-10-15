@@ -8,6 +8,7 @@ typedef struct registers
     uint32_t int_no, err_code;
     uint32_t eip, cs, eflags, useresp, ss;
 } registers_t;
+void isr_handler(registers_t regs);
 extern void _isr_0();
 extern void _isr_1();
 extern void _isr_2();
@@ -40,4 +41,20 @@ extern void _isr_28();
 extern void _isr_29();
 extern void _isr_30();
 extern void _isr_31();
+extern void _isr_32();
+extern void _isr_33();
+extern void _isr_34();
+extern void _isr_35();
+extern void _isr_36();
+extern void _isr_37();
+extern void _isr_38();
+extern void _isr_39();
+extern void _isr_40();
+extern void _isr_41();
+extern void _isr_42();
+extern void _isr_43();
+extern void _isr_44();
+extern void _isr_45();
+extern void _isr_46();
+extern void _isr_47();
 #endif

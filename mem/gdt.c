@@ -1,5 +1,14 @@
 #include "gdt.h"
-gdt_descriptor create_descriptor(uint32_t base, uint32_t limit, uint16_t flag)
+static gdt_descriptor create_descriptor(uint32_t base, uint32_t limit, uint16_t flag);
+
+void init_gdt(void) {
+    /*GDT[0] = ((sizeof(gdt_descriptor) * GDT_ENTRIES - 1) & 0xFFFF)
+            | ((uint32_t)GDT) << 16;*/
+    GDT[1] = create_descriptor(0, 0xFFFFF, GDT_CODE_PL0);
+    GDT[2] = create_descriptor(0, 0xFFFFF, GDT_DATA_PL0);
+    setGdt(GDT, sizeof(GDT));
+}
+static gdt_descriptor create_descriptor(uint32_t base, uint32_t limit, uint16_t flag)
 {
     gdt_descriptor descriptor;
  
