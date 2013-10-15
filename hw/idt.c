@@ -38,22 +38,22 @@ void init_idt() {
     set_idt_descriptor(29, _isr_29, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(30, _isr_30, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(31, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(32, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(33, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(34, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(35, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(36, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(37, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(38, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(39, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(40, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(41, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(42, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(43, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(44, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(45, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(46, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(47, _isr_31, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(32, _isr_32, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(33, _isr_33, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(34, _isr_34, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(35, _isr_35, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(36, _isr_36, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(37, _isr_37, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(38, _isr_38, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(39, _isr_39, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(40, _isr_40, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(41, _isr_41, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(42, _isr_42, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(43, _isr_43, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(44, _isr_44, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(45, _isr_45, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(46, _isr_46, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(47, _isr_47, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     setIdt(IDT, sizeof(IDT));
 }
 static void set_idt_descriptor(int irq, void *handler, uint16_t selector, uint8_t type_attr) {

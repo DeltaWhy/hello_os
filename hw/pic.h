@@ -8,6 +8,7 @@
 #define ICW4 0x01
 
 void init_pics(int pic1, int pic2);
-
+void enable_irq(int irq);
+void disable_irq(int irq);
 
 #endif

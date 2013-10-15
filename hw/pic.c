@@ -1,8 +1,6 @@
 #include "pic.h"
 #include "port.h"
-
-
-
+#include <stdint.h>
 
 void init_pics(int pic1, int pic2)
 {
@@ -24,4 +22,21 @@ void init_pics(int pic1, int pic2)
 
 	/* disable all IRQs */
 	outportb(PIC1 + 1, 0xFF);
+	outportb(PIC2 + 1, 0xFF);
+}
+
+uint16_t ocw1 = 0xFFFF;
+
+void enable_irq(int irq)
+{
+    ocw1 &= ~(1 << irq);
+    if (irq < 8) outportb(PIC1+1, ocw1&0xFF);
+    else outportb(PIC2+1, ocw1>>8);
+}
+
+void disable_irq(int irq)
+{
+    ocw1 |= (1 << irq);
+    if (irq < 8) outportb(PIC1+1, ocw1&0xFF);
+    else outportb(PIC2+1, ocw1>>8);
 }

@@ -24,6 +24,8 @@ void kmain(void)
         init_idt();
 	print("initializing PICs...\n");
 	init_pics(0x20, 0x28);
+        print("enabling timer interrupts...\n");
+        enable_irq(0);
 	cprint("Jonathan's OS\n", 2);
 	update_cursor();
 	while(1){
@@ -44,7 +46,7 @@ void kmain(void)
                 else if (strcheck(input, "interrupt") == 1)
                 {
                     print("interrupting...\n");
-                    __asm__ __volatile__ ("int $0x1");
+                    __asm__ __volatile__ ("int $33");
                 }
                 else if (strcheck(input, "crash") == 1)
                 {
