@@ -1,5 +1,5 @@
-#ifndef __GDT_H
-#define __GDT_H
+#ifndef GDT_H
+#define GDT_H
 #include <stdint.h>
  
 // Each define here is for a specific flag in the descriptor.

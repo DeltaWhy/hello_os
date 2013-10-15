@@ -1,5 +1,5 @@
-#ifndef __IDT_H
-#define __IDT_H
+#ifndef IDT_H
+#define IDT_H
 
 #define IDT_TASK_32 0x5
 #define IDT_INT_16 0x6

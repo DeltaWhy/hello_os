@@ -1,3 +1,5 @@
+#ifndef ISR_H
+#define ISR_H
 #include <stdint.h>
 typedef struct registers
 {
@@ -38,3 +40,4 @@ extern void _isr_28();
 extern void _isr_29();
 extern void _isr_30();
 extern void _isr_31();
+#endif
