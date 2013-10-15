@@ -28,7 +28,7 @@ void kmain(void)
 	update_cursor();
 	while(1){
             print("> ");
-		char * input = keyboard();
+		char * input = getln();
 		if (strcheck(input, "help") == 1){
 			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\ninterrupt - tests the interrupt system.\ncrash - attempts to divide by zero.\n");
 		}

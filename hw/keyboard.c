@@ -1,3 +1,4 @@
+#include "keyboard.h"
 #include "port.h"
 #include "../string.h"
 int ccol;
@@ -9,7 +10,7 @@ int scan(){
 	char key;
 	for (;;){
 		oldkey=key;
-		key=inportb(0x60);
+		key=inportb(KBD_ENCODER_REG);
 		if(!(oldkey==key)){
 			return key;
 		}
@@ -19,29 +20,31 @@ int scan(){
 
 void klights(){
 	if (led_stat == 0){
-		outportb(0x60, 0xED);
-		while(inportb(0x64) & 2);
-		outportb(0x60, 4);
-		while(inportb(0x64) & 2);
+		outportb(KBD_ENCODER_REG, KBD_ENC_CMD_SET_LED);
+		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
+		outportb(KBD_ENCODER_REG, KBD_LED_CAPS);
+		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
 		led_stat++;
 	}
 	else if (led_stat == 1){
-		outportb(0x60, 0xED);
-		while(inportb(0x64) & 2);
-		outportb(0x60, 0);
-		while(inportb(0x64) & 2);
+		outportb(KBD_ENCODER_REG, KBD_ENC_CMD_SET_LED);
+		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
+		outportb(KBD_ENCODER_REG, 0);
+		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
 		led_stat=0;
 	}
 }
-char * keyboard(){
+char * getln(){
 	for(int i=0;i<100;i++)
 		keysq[i] = 0;
 	int kcount = 0;
 	int code = 0;
 	scan(); //so it doesn't think its enter
-	outportb(0x60, 0xF4);
+	outportb(KBD_ENCODER_REG, KBD_ENC_CMD_ENABLE);
 	while (1){
-		code = scan();
+                // wait for input
+                while(!(inportb(KBD_CONTROLLER_REG)&KBD_STATS_OUT_BUF));
+		code = inportb(KBD_ENCODER_REG);
 		if (code == 0x01){
 			print("esc");
 			kcount+=3;
