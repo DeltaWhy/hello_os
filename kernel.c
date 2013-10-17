@@ -30,7 +30,7 @@ void kmain(void)
         enable_irq(1);
         send_eoi(0);
         __asm__ __volatile__ ("sti");
-	cprint("Jonathan's OS\n", 2);
+	cprint("Hello OS\n", 2);
 	update_cursor();
         while(1); // the command prompt below stops keyboard interrupts from working
 	while(1){
