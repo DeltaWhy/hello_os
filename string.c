@@ -43,6 +43,22 @@ void cprint(char * str, char col) {
 		str++;
 	}
 }
+void charPrint(char str) {
+
+	if (str == '\n'){
+		int offset = cursor - videoram;
+		int column = offset % (SCREEN_WIDTH * 2);
+		cursor += (SCREEN_WIDTH * 2) - column;
+		ccol += ((SCREEN_WIDTH * 2) - column)/2;
+		update_cursor();
+		scroll();
+	}else{
+		kputc(str, 0x07);
+		ccol++;
+		update_cursor();
+	}
+
+}
 
 void print(char * str) {
 	while (*str != 0) {

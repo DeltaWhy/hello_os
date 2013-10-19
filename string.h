@@ -13,6 +13,7 @@ void kclear();
 void kputc(char c, char col);
 void print(char * str);
 void cprint(char * str, char col);
+void charPrint(char str);
 void scroll();
 int strcheck(char *, char *);
 char * itoa( int value, char * str, int base );

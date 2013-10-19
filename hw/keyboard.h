@@ -65,8 +65,8 @@ enum KBD_CMD {
 
 void init_keyboard();
 void keyboard_irq_handler();
-char * getln();
-
+char getchar();
+int scan();
 void klights();
 #endif
 

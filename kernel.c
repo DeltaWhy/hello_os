@@ -34,8 +34,9 @@ void kmain(void)
 	update_cursor();
         while(1); // the command prompt below stops keyboard interrupts from working
 	while(1){
+		 
             print("> ");
-		char * input = getln();
+		char * input = "hi";
 		if (strcheck(input, "help") == 1){
 			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\ninterrupt - tests the interrupt system.\ncrash - attempts to divide by zero.\n");
 		}
@@ -63,7 +64,8 @@ void kmain(void)
                     x = z;
                 }
 		else{
-			print("don't know that one\n");
+			print(input);
+			print(": command not found");
 		}
 	}
 }
