@@ -1,6 +1,6 @@
 #include "keyboard.h"
 #include "port.h"
-#include "../string.h"
+#include "screen.h"
 //int ccol;
 int led_stat=0;
 //int crow;

@@ -1,9 +1,8 @@
 #include <stdint.h>
-#include <string.h>
 #include "hw/pic.h"
 #include "hw/port.h"
 #include "hw/keyboard.h"
-#include "string.h"
+#include "hw/screen.h"
 #include "hw/idt.h"
 #include "mem/gdt.h"
 void exit(void);

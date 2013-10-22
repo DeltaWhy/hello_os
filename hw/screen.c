@@ -1,5 +1,5 @@
-#include "hw/port.h"
-#include "string.h"
+#include "port.h"
+#include "screen.h"
 volatile unsigned char *videoram = (unsigned char *)0xB8000;
 volatile unsigned char *cursor = (unsigned char *)0xB8000;
 int crow, ccol;
