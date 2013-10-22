@@ -112,11 +112,20 @@ void test_strncat() {
 }
 
 void test_strchr(){
-    char *s = "abcdefg";
+    char *s = "abcdecg";
 
     assert(strchr(s, 'c') == s+2);
     assert(strchr(s, 'x') == NULL);
     assert(strchr(s, '\0') == s+7);
+}
+
+void test_strrchr() {
+    char *s = "xabcdecg";
+
+    assert(strrchr(s+1, 'c') == s+6);
+    assert(strrchr(s+1, 'x') == NULL);
+    assert(strrchr(s+1, '\0') == s+8);
+    assert(strrchr(s+1, 'a') == s+1);
 }
 
 void test_strcmp(){
@@ -205,6 +214,15 @@ void test_strncpy(){
     assert(d[9] == '\0');
 }
 
+void test_strspn() {
+    char *s = "abcdefgh";
+    char *r1 = "";
+    char *r2 = "acbe";
+
+    assert(strspn(s, r1) == 0);
+    assert(strspn(s, r2) == 3);
+}
+
 void test_strcspn(){
     char *s = "abcdefgh";
     char *r1 = "";
@@ -225,6 +243,24 @@ void test_strlen(){
     assert(strlen(s3) == 0);
 }
 
+void test_strpbrk() {
+    char *s = "abcdefg";
+
+    assert(strpbrk(s, "") == NULL);
+    assert(strpbrk(s, "xcde") == s+2);
+    assert(strpbrk(s, "xyz") == NULL);
+}
+
+void test_strstr() {
+    char *s1 = "ababcde";
+    char *s2 = "abc";
+    char *s3 = "abd";
+
+    assert(strstr(s1, "") == s1);
+    assert(strstr(s1, s2) == s1+2);
+    assert(strstr(s1, s3) == NULL);
+}
+
 int main() {
     test_memccpy();
     test_memchr();
@@ -234,13 +270,17 @@ int main() {
     test_strcat();
     test_strncat();
     test_strchr();
+    test_strrchr();
     test_strcmp();
     test_strncmp();
     test_strcoll();
     test_strcpy();
     test_strncpy();
+    test_strspn();
     test_strcspn();
     test_strlen();
+    test_strpbrk();
+    test_strstr();
 
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "string.h"
+#include <stdbool.h>
 
 /**
  * Copies no more than n bytes from src to dest, stopping when the character c
@@ -138,6 +139,17 @@ char *strchr(const char * s, int c) {
 }
 
 /**
+ * Returns a pointer to the last occurence of the character c in s.
+ */
+char *strrchr(const char * s, int c) {
+    const char *p = s;
+    while (*p) p++;
+    while (*p != (char)c && p >= s) p--;
+    if (p < s) return NULL;
+    return (char *)p;
+}
+
+/**
  * Compares s1 and s2.
  */
 int strcmp(const char * s1, const char * s2) {
@@ -216,6 +228,28 @@ char *strncpy(char * dest, const char * src, size_t n) {
 }
 
 /**
+ * Returns the number of bytes in the initial segment of s which are in the
+ * string accept.
+ */
+size_t strspn(const char * s, const char * accept) {
+    size_t n = 0;
+    size_t len = strlen(accept);
+    while (*s) {
+        bool ok = false;
+        for (size_t i=0; i < len; i++) {
+            if (*s == accept[i]) {
+                ok = true;
+                break;
+            }
+        }
+        if (!ok) return n;
+        s++;
+        n++;
+    }
+    return n;
+}
+
+/**
  * Returns the number of bytes in the initial segment of s which are not in the
  * string reject.
  */
@@ -242,4 +276,40 @@ size_t strlen(const char * s) {
         n++;
     }
     return n;
+}
+
+/**
+ * Locates the first occurrence in s of any of the bytes in the string accept.
+ */
+char *strpbrk(const char * s, const char * accept) {
+    size_t len = strlen(accept);
+    while (*s) {
+        for (size_t i=0; i < len; i++) {
+            if (*s == accept[i]) {
+                return (char *)s;
+            }
+        }
+        s++;
+    }
+    return NULL;
+}
+
+/**
+ * Finds the first occurrence of needle in haystack.
+ */
+char *strstr(const char * haystack, const char * needle) {
+    size_t len = strlen(needle);
+    if (len == 0) return (char *)haystack;
+    while (*haystack) {
+        bool found = true;
+        for (size_t i=0; i<len; i++) {
+            if (haystack[i] == '\0' || haystack[i] != needle[i]) {
+                found = false;
+                break;
+            }
+        }
+        if (found) return (char *)haystack;
+        haystack++;
+    }
+    return NULL;
 }
