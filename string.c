@@ -94,3 +94,152 @@ void *memset(void *s, int c, size_t n) {
     }
     return s;
 }
+
+/**
+ * Appends src to dest, overwriting the terminating null byte at the end of
+ * dest, and then adds a terminating null byte.
+ * @return A pointer to dest.
+ */
+char *strcat(char * dest, const char * src) {
+    char *p = dest;
+    while (*p) p++;
+    while (*src) {
+        *p = *src;
+        p++;
+        src++;
+    }
+    *p = '\0';
+    return dest;
+}
+
+/**
+ * Appends at most n bytes from src to dest.
+ */
+char *strncat(char * dest, const char * src, size_t n) {
+    char *p = dest;
+    while (*p) p++;
+    while (*src && n != 0) {
+        *p = *src;
+        p++;
+        src++;
+        n--;
+    }
+    *p = '\0';
+    return dest;
+}
+
+/**
+ * Returns a pointer to the first occurence of the character c in s.
+ */
+char *strchr(const char * s, int c) {
+    while (*s != (char)c && *s != '\0') s++;
+    if (*s == c) return (char *)s;
+    return NULL;
+}
+
+/**
+ * Compares s1 and s2.
+ */
+int strcmp(const char * s1, const char * s2) {
+    while (*s1 && *s2) {
+        if (*s1 < *s2) return -1;
+        if (*s1 > *s2) return 1;
+        s1++;
+        s2++;
+    }
+    if (*s1 < *s2) return -1;
+    if (*s1 > *s2) return 1;
+    return 0;
+}
+
+/**
+ * Compares at most the first n bytes of s1 and s2.
+ */
+int strncmp(const char * s1, const char * s2, size_t n) {
+    while (*s1 && *s2 && n != 0) {
+        if (*s1 < *s2) return -1;
+        if (*s1 > *s2) return 1;
+        s1++;
+        s2++;
+        n--;
+    }
+    if (n == 0) return 0;
+    if (*s1 < *s2) return -1;
+    if (*s1 > *s2) return 1;
+    return 0;
+}
+
+/**
+ * Compares s1 and s2 in the current locale.
+ */
+int strcoll(const char * s1, const char * s2) {
+    // STUB - we don't have locales
+    return strcmp(s1, s2);
+}
+
+/**
+ * Copies src, including the terminating null byte, to dest. Strings may not
+ * overlap.
+ */
+char *strcpy(char * dest, const char * src) {
+    char *p = dest;
+    while (*src) {
+        *p = *src;
+        p++;
+        src++;
+    }
+    *p = '\0';
+    return dest;
+}
+
+/**
+ * Copies at most n bytes of src to dest.
+ * If there is no null byte among the first n bytes of src, dest will not be
+ * null-terminated.
+ * If the length of src is less than n, writes additional null bytes to dest to
+ * ensure that a total of n bytes are written.
+ */
+char *strncpy(char * dest, const char * src, size_t n) {
+    char *p = dest;
+    while (*src && n != 0) {
+        *p = *src;
+        p++;
+        src++;
+        n--;
+    }
+    while (n != 0) {
+        *p = '\0';
+        p++;
+        n--;
+    }
+    return dest;
+}
+
+/**
+ * Returns the number of bytes in the initial segment of s which are not in the
+ * string reject.
+ */
+size_t strcspn(const char * s, const char * reject) {
+    size_t n = 0;
+    size_t len = strlen(reject);
+    while (*s) {
+        for (size_t i=0; i < len; i++) {
+            if (*s == reject[i]) return n;
+        }
+        s++;
+        n++;
+    }
+    return n;
+}
+
+/**
+ * Calculate the length of a string, excluding the terminating null byte.
+ */
+size_t strlen(const char * s) {
+    size_t n = 0;
+    while (*s) {
+        s++;
+        n++;
+    }
+    return n;
+}

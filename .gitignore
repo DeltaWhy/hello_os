@@ -3,3 +3,4 @@
 kernel.elf
 floppy.img
 *~
+test/test_string
