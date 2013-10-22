@@ -1,8 +1,9 @@
+MAKE = make
 CC = gcc
 CFLAGS = -std=c99 -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs
 LD = ld
 
-OBJS = kernel.o hw/port.o loader.o hw/pic.o hw/screen.o hw/keyboard.o mem/gdt.o mem/setgdt.o hw/idt.o hw/isr_handler.o hw/setidt.o hw/isr_wrapper.o
+OBJS = kernel.o string.o hw/port.o loader.o hw/pic.o hw/screen.o hw/keyboard.o mem/gdt.o mem/setgdt.o hw/idt.o hw/isr_handler.o hw/setidt.o hw/isr_wrapper.o
 
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img
@@ -27,5 +28,10 @@ $(KERNELFN): $(OBJS)
 .c.o:
 	$(CC) $(CFLAGS) -o $@ -c $<
 
+.PHONY: test clean
+
+test:
+	@$(MAKE) -C test test
 clean:
-	rm -f $(OBJS) $(KERNELFN) $(FLOPPY_IMG)
+	-rm $(OBJS) $(KERNELFN) $(FLOPPY_IMG)
+	@$(MAKE) -C test clean
