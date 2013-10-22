@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "string.h"
 #include "hw/pic.h"
 #include "hw/port.h"
 #include "hw/keyboard.h"
@@ -36,24 +37,24 @@ void kmain(void)
 		 
             print("> ");
 		char * input = "hi";
-		if (strcheck(input, "help") == 1){
+		if (strcmp(input, "help") == 0){
 			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\ninterrupt - tests the interrupt system.\ncrash - attempts to divide by zero.\n");
 		}
-		else if (strcheck(input, "clear") ==1)
+		else if (strcmp(input, "clear") ==0)
 		{
 			kclear();
 		}
-		else if (strcheck(input, "reboot") == 1)
+		else if (strcmp(input, "reboot") == 0)
 		{
 			exit();
 			print("this needs to be fixed.  BAD.");
 		}
-                else if (strcheck(input, "interrupt") == 1)
+                else if (strcmp(input, "interrupt") == 0)
                 {
                     print("interrupting...\n");
                     __asm__ __volatile__ ("int $33");
                 }
-                else if (strcheck(input, "crash") == 1)
+                else if (strcmp(input, "crash") == 0)
                 {
                     print("dividing by 0...\n");
                     int x, y, z;

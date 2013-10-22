@@ -1,5 +1,5 @@
-#ifndef STRING_H
-#define STRING_H
+#ifndef SCREEN_H
+#define SCREEN_H
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 26
@@ -15,7 +15,6 @@ void print(char * str);
 void cprint(char * str, char col);
 void charPrint(char str);
 void scroll();
-int strcheck(char *, char *);
 char * itoa( int value, char * str, int base );
 extern volatile unsigned char *videoram;
 extern volatile unsigned char *cursor;
