@@ -80,7 +80,15 @@ void *memcpy(void *dest, const void *src, size_t n) {
 /**
  * Copies n bytes from src to dest, memory areas may overlap.
  */
-//void *memmove(void *dest, const void *src, size_t n);
+void *memmove(void *dest, const void *src, size_t n) {
+    // This is probably a bad implementation - it can most likely be done
+    // without allocating a temp buffer, and that temp buffer really doesn't
+    // belong on the stack.
+    unsigned char tmp[n]; //apparently you can do this in C99
+    memcpy(tmp, src, n);
+    memcpy(dest, tmp, n);
+    return dest;
+}
 
 /**
  * Fills the first n bytes of s with the constant byte c.

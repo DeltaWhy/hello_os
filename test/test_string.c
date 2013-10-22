@@ -58,6 +58,15 @@ void test_memcpy() {
     assert(dest[6] == '\0');
 }
 
+void test_memmove() {
+    char s[] = "abcdefgh";
+    void *res;
+
+    res = memmove(s+1, s, 4);
+    assert(res == s+1);
+    assert(strncmp(s, "aabcdfgh", 8) == 0);
+}
+
 void test_memset() {
     char s[] = "aaaaaa";
     void *res;
@@ -266,6 +275,7 @@ int main() {
     test_memchr();
     test_memcmp();
     test_memcpy();
+    test_memmove();
     test_memset();
     test_strcat();
     test_strncat();
