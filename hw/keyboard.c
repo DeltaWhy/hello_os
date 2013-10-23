@@ -1,3 +1,4 @@
+#include "../globals.h"
 #include "keyboard.h"
 #include "port.h"
 #include "screen.h"
@@ -7,8 +8,9 @@ int led_stat=0;
 
 #include "scancode.h"
 
-cbuf scan_buf;
-kbd_info keyboard;
+static cbuf key_buf;
+static cbuf line_buf;
+static kbd_info keyboard;
 
 void init_keyboard() {
     // I have no idea if this is correct
@@ -23,7 +25,8 @@ void init_keyboard() {
     outportb(KBD_CONTROLLER_REG, KBD_CTL_CMD_WRITE_CMD);
     outportb(KBD_CONTROLLER_REG, cmd | KBD_CMD_KEYBOARD_INTERRUPT);
 
-    cbuf_new(&scan_buf);
+    cbuf_new(&key_buf);
+    cbuf_new(&line_buf);
     keyboard.mode = 0;
     keyboard.held = 0;
 }
@@ -31,10 +34,28 @@ void init_keyboard() {
 void keyboard_irq_handler() {
     // put scancode in buffer
     while (!(inportb(KBD_CONTROLLER_REG)&KBD_STATS_OUT_BUF));
-    char scancode = inportb(0x60);
-    cbuf_push(&scan_buf, scancode);
-    if (keyboard.mode & KBD_INFO_MODE_ECHO && !(scancode & 0x80)) {
-        kputc(scancode_to_ascii[(size_t)scancode], 0x07);
+    int scancode = inportb(0x60);
+    if (keyboard.mode & KBD_INFO_MODE_RAW) {
+        cbuf_push(&key_buf, scancode);
+    }
+    if (!(scancode & 0x80)) {
+        char c = scancode_to_ascii[scancode];
+        if (c && keyboard.mode & KBD_INFO_MODE_ECHO) {
+            kputc(c, 0x07);
+        }
+        if (c && !(keyboard.mode & (KBD_INFO_MODE_RAW | KBD_INFO_MODE_LINE))) {
+            // character mode
+            cbuf_push(&key_buf, c);
+        } else if (c && KBD_INFO_MODE_LINE) {
+            if (c == '\n') {
+                while (!cbuf_empty(&line_buf)) {
+                    cbuf_push(&key_buf, cbuf_pop(&line_buf));
+                }
+                cbuf_push(&key_buf, '\n');
+            } else {
+                cbuf_push(&line_buf, c);
+            }
+        }
     }
 
     // reset the keyboard
@@ -62,19 +83,30 @@ void klights(){
 	}
 }
 
-char getchar(){
-    char c = 0;
-    while (c == 0) {
-        while (cbuf_empty(&scan_buf)) __asm__ ("hlt");
-        int scancode = cbuf_pop(&scan_buf);
-        if (scancode == 0xE0) {
-            // special key - ignore for now
-            while (cbuf_empty(&scan_buf)) __asm__ ("hlt");
-            cbuf_pop(&scan_buf);
-            continue;
-        } else {
-            c = scancode_to_ascii[scancode];
+void kbd_set_mode(uint32_t mode) {
+    // if switching raw/cooked mode, flush the buffer
+    if ((mode & KBD_INFO_MODE_RAW) ^ (keyboard.mode & KBD_INFO_MODE_RAW)) cbuf_flush(&key_buf);
+    // if switching out of line mode, consume the line buffer
+    if ((keyboard.mode & KBD_INFO_MODE_LINE) && !(mode & KBD_INFO_MODE_LINE)) {
+        while (!cbuf_empty(&line_buf)) {
+            cbuf_push(&key_buf, cbuf_pop(&line_buf));
         }
     }
-    return c;
+    keyboard.mode = mode;
+}
+
+char getchar(){
+    while(cbuf_empty(&key_buf)) wait();
+    return cbuf_pop(&key_buf);
+}
+
+char * kgets(char * buf) {
+    char *p = buf;
+    char c;
+    while ((c = getchar()) != '\n') {
+        *p = c;
+        p++;
+    }
+    *p = '\0';
+    return buf;
 }

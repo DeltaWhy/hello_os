@@ -74,15 +74,17 @@ void kmain(mboot_info *mbd, uint32_t magic) {
         send_eoi(0);
         __asm__ __volatile__ ("sti");
 	cprint("Hello OS\n", 2);
-        keyboard.mode |= KBD_INFO_MODE_ECHO;
         //print_mboot_info(mbd);
+        kbd_set_mode(KBD_INFO_MODE_ECHO | KBD_INFO_MODE_LINE);
 	update_cursor();
         while (1) {
-            print("getting char...  ");
-            char c = getchar();
-            print(" got ");
-            kputc(c, 0x0f);
+            char line[1024];
+            print("getting line...\n");
+            kgets(line);
+            print("got ");
+            print(line);
             print("\n");
+            update_cursor();
         }
 	while(1){
 		 

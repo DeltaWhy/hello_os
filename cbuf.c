@@ -48,3 +48,7 @@ int cbuf_write(cbuf *buf, char *data, int length){
     }
     return length;
 }
+
+void cbuf_flush(cbuf *buf) {
+    buf->start = buf->end;
+}

@@ -4,13 +4,14 @@
 #include <stdint.h>
 
 enum KBD_INFO_MODE {
-    KBD_INFO_MODE_ECHO = 0x1
+    KBD_INFO_MODE_ECHO = 0x1,
+    KBD_INFO_MODE_RAW = 0x2,
+    KBD_INFO_MODE_LINE = 0x4
 };
 typedef struct kbd_info {
     uint32_t mode;
     uint32_t held;
 } kbd_info;
-extern kbd_info keyboard;
 
 #define KBD_ENCODER_REG 0x60
 #define KBD_CONTROLLER_REG 0x64
@@ -77,6 +78,8 @@ enum KBD_CMD {
 void init_keyboard();
 void keyboard_irq_handler();
 char getchar();
+char * kgets(char * buf);
 void klights();
+void kbd_set_mode(uint32_t mode);
 #endif
 

@@ -18,4 +18,5 @@ char cbuf_peek(cbuf *buf);
 int cbuf_empty(cbuf *buf);
 int cbuf_read(cbuf *buf, char *out, int length);
 int cbuf_write(cbuf *buf, char *data, int length);
+void cbuf_flush(cbuf *buf);
 #endif
