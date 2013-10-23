@@ -7,6 +7,7 @@
 #include "hw/screen.h"
 #include "hw/idt.h"
 #include "mem/gdt.h"
+#include "shell/shell.h"
 #define UNUSED(x) (void)x
 void exit(void);
 
@@ -75,52 +76,9 @@ void kmain(mboot_info *mbd, uint32_t magic) {
         __asm__ __volatile__ ("sti");
 	cprint("Hello OS\n", 2);
         //print_mboot_info(mbd);
-        kbd_set_mode(KBD_INFO_MODE_ECHO | KBD_INFO_MODE_LINE);
 	update_cursor();
-        while (1) {
-            char line[1024];
-            print("getting line...\n");
-            kgets(line);
-            print("got ");
-            print(line);
-            print("\n");
-            update_cursor();
-        }
-	while(1){
-		 
-            print("> ");
-		char * input = "hi";
-		if (strcmp(input, "help") == 0){
-			print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\ninterrupt - tests the interrupt system.\ncrash - attempts to divide by zero.\n");
-		}
-		else if (strcmp(input, "clear") ==0)
-		{
-			kclear();
-		}
-		else if (strcmp(input, "reboot") == 0)
-		{
-			exit();
-			print("this needs to be fixed.  BAD.");
-		}
-                else if (strcmp(input, "interrupt") == 0)
-                {
-                    print("interrupting...\n");
-                    __asm__ __volatile__ ("int $33");
-                }
-                else if (strcmp(input, "crash") == 0)
-                {
-                    print("dividing by 0...\n");
-                    int x, y, z;
-                    x = 10;
-                    y = 0;
-                    z = x / y;
-                    x = z;
-                }
-		else{
-			print(input);
-			print(": command not found");
-		}
-	}
+        shell();
+        exit();
 }
 void exit(void){
 	while(inportb(0x64) & 0x02);
