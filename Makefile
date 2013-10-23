@@ -1,9 +1,9 @@
 MAKE = make
 CC = gcc
-CFLAGS = -std=c99 -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs
+CFLAGS = -std=c99 -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs -I.
 LD = ld
 
-OBJS = kernel.o string.o hw/port.o loader.o hw/pic.o hw/screen.o hw/keyboard.o mem/gdt.o mem/setgdt.o hw/idt.o hw/isr_handler.o hw/setidt.o hw/isr_wrapper.o cbuf.o shell/shell.o
+OBJS = kernel.o string.o hw/port.o loader.o hw/pic.o hw/screen.o hw/keyboard.o mem/gdt.o mem/setgdt.o hw/idt.o hw/isr_handler.o hw/setidt.o hw/isr_wrapper.o cbuf.o shell/shell.o shell/builtins/bootinfo.o
 
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img

@@ -60,7 +60,7 @@ void kputc(char c, char col) {
 void scroll(){
     int i;
     int offset = cursor - videoram;
-      while(offset >= 160*25)          /* Are we off-screen ?          */
+      if(offset >= 160*25)          /* Are we off-screen ?          */
       {
          for(i = 0; i < 160*24; i++)    /* Scroll the screen up         */
          {

@@ -1,42 +1,88 @@
+#include <stdbool.h>
+#include "globals.h"
 #include "shell.h"
 #include "../hw/keyboard.h"
 #include "../string.h"
 #include "../hw/screen.h"
 
+static builtin builtins[MAX_BUILTINS];
+static int num_builtins = 0;
+
 void shell() {
     kbd_set_mode(KBD_INFO_MODE_ECHO | KBD_INFO_MODE_LINE);
     char input[1024];
     while(1) {
-        print("> ");
+        cprint("> ", 0x0A);
         kgets(input);
-        if (strcmp(input, "help") == 0){
-            print("supported commands:\nhelp - displays this message.\nclear - clears the screen.\nreboot - might make it restart.\ninterrupt - tests the interrupt system.\ncrash - attempts to divide by zero.\n");
+        bool found = false;
+        for (int i=0; i < num_builtins; i++) {
+            if (strcmp(input, builtins[i].name) == 0) {
+                found = true;
+                (*(builtins[i].fn))(0, NULL);
+                break;
+            }
         }
-        else if (strcmp(input, "clear") ==0)
-        {
-            kclear();
-        }
-        else if (strcmp(input, "reboot") == 0)
-        {
-            return;
-        }
-        else if (strcmp(input, "interrupt") == 0)
-        {
-            print("interrupting...\n");
-            __asm__ __volatile__ ("int $33");
-        }
-        else if (strcmp(input, "crash") == 0)
-        {
-            print("dividing by 0...\n");
-            int x, y, z;
-            x = 10;
-            y = 0;
-            z = x / y;
-            x = z;
-        }
-        else{
+        if (!found) {
             print(input);
             print(": command not found");
         }
+        continue;
     }
 }
+
+void register_builtin(builtin b) {
+    builtins[num_builtins] = b;
+    num_builtins++;
+}
+
+void help(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    print("supported commands:\n");
+    for (int i=0; i < num_builtins; i++) {
+        print("    ");
+        print((char *)builtins[i].name);
+        print(" - ");
+        print((char *)builtins[i].description);
+        print("\n");
+    }
+}
+builtin help_builtin = {&help, "help", "Prints this message."};
+
+void clear(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    kclear();
+}
+builtin clear_builtin = {&clear, "clear", "Clears the screen."};
+
+void interrupt(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    print("interrupting...\n");
+    __asm__ __volatile__ ("int $33");
+}
+builtin interrupt_builtin = {&interrupt, "interrupt", "Tests software interrupts."};
+
+void crash(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    print("dividing by 0...\n");
+    int x, y, z;
+    x = 10;
+    y = 0;
+    z = x / y;
+    x = z;
+}
+builtin crash_builtin = {&crash, "crash", "Tests CPU exception handling by dividing by 0."};
+
+extern builtin bootinfo_builtin;
+
+void init_shell_builtins() {
+    register_builtin(help_builtin);
+    register_builtin(clear_builtin);
+    register_builtin(interrupt_builtin);
+    register_builtin(crash_builtin);
+    register_builtin(bootinfo_builtin);
+}
+

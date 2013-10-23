@@ -16,12 +16,13 @@
 stack_bottom:
 .skip 16384                             # reserve 16 KiB stack
 stack_top:
+.comm boot_info, 4
 
 loader:
     movl  $stack_top, %esp               # set up the stack, stacks grow downwards
+    movl  %ebx, boot_info
 
     push  %eax
-    push  %ebx
     call  kmain                         # call kernel proper
 
     cli
