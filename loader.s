@@ -16,14 +16,12 @@
 stack_bottom:
 .skip 16384                             # reserve 16 KiB stack
 stack_top:
-.comm  mbd, 4                           # we will use this in kmain
-.comm  magic, 4                         # we will use this in kmain
 
 loader:
     movl  $stack_top, %esp               # set up the stack, stacks grow downwards
-    movl  %eax, magic                   # Multiboot magic number
-    movl  %ebx, mbd                     # Multiboot data structure
 
+    push  %eax
+    push  %ebx
     call  kmain                         # call kernel proper
 
     cli
