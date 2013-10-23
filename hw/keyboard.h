@@ -1,6 +1,17 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
+#include <stdint.h>
+
+enum KBD_INFO_MODE {
+    KBD_INFO_MODE_ECHO = 0x1
+};
+typedef struct kbd_info {
+    uint32_t mode;
+    uint32_t held;
+} kbd_info;
+extern kbd_info keyboard;
+
 #define KBD_ENCODER_REG 0x60
 #define KBD_CONTROLLER_REG 0x64
 enum KBD_STATS {
@@ -66,7 +77,6 @@ enum KBD_CMD {
 void init_keyboard();
 void keyboard_irq_handler();
 char getchar();
-int scan();
 void klights();
 #endif
 

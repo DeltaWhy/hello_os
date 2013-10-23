@@ -1,9 +1,14 @@
 #include "keyboard.h"
 #include "port.h"
 #include "screen.h"
+#include "../string.h"
+#include "../cbuf.h"
 int led_stat=0;
 
 #include "scancode.h"
+
+cbuf scan_buf;
+kbd_info keyboard;
 
 void init_keyboard() {
     // I have no idea if this is correct
@@ -17,13 +22,22 @@ void init_keyboard() {
     print("\n");
     outportb(KBD_CONTROLLER_REG, KBD_CTL_CMD_WRITE_CMD);
     outportb(KBD_CONTROLLER_REG, cmd | KBD_CMD_KEYBOARD_INTERRUPT);
+
+    cbuf_new(&scan_buf);
+    keyboard.mode = 0;
+    keyboard.held = 0;
 }
 
 void keyboard_irq_handler() {
-	charPrint(getchar()); 
-	//print("\n");
+    // put scancode in buffer
+    while (!(inportb(KBD_CONTROLLER_REG)&KBD_STATS_OUT_BUF));
+    char scancode = inportb(0x60);
+    cbuf_push(&scan_buf, scancode);
+    if (keyboard.mode & KBD_INFO_MODE_ECHO && !(scancode & 0x80)) {
+        kputc(scancode_to_ascii[(size_t)scancode], 0x07);
+    }
 
-    inportb(0x60);
+    // reset the keyboard
     int i = inportb(0x61);	//WEEP WEEP! MAGIC NUMBERS!
     outportb(0x61, i|0x80);
     outportb(0x61, i);
@@ -47,40 +61,20 @@ void klights(){
 		led_stat=0;
 	}
 }
-int scan(){
-	char oldkey;
-	char key;
-	for (;;){
-		oldkey=key;
-		key=inportb(0x60);
-		if(!(oldkey==key)){
-			return key;
-		}
-	}
-}
+
 char getchar(){
-	char key;	
-
-	outportb(KBD_ENCODER_REG, KBD_ENC_CMD_ENABLE);
-
-	
-                // wait for input
-
-      //         while(!(inportb(KBD_CONTROLLER_REG)&KBD_STATS_OUT_BUF)){
-	//	code = inportb(KBD_ENCODER_REG);
-	//					
-	//	}
-	
-                int scancode = scan();
-		 key = scancode_to_ascii[scancode&0x7f];
-		
-
-		
-		
-		return key;
-		
-
-		
-	
-	return key;
+    char c = 0;
+    while (c == 0) {
+        while (cbuf_empty(&scan_buf)) __asm__ ("hlt");
+        int scancode = cbuf_pop(&scan_buf);
+        if (scancode == 0xE0) {
+            // special key - ignore for now
+            while (cbuf_empty(&scan_buf)) __asm__ ("hlt");
+            cbuf_pop(&scan_buf);
+            continue;
+        } else {
+            c = scancode_to_ascii[scancode];
+        }
+    }
+    return c;
 }
