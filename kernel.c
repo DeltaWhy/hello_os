@@ -7,6 +7,7 @@
 #include "hw/screen.h"
 #include "hw/idt.h"
 #include "mem/gdt.h"
+#define UNUSED(x) (void)x
 void exit(void);
 
 void print_mboot_info(mboot_info *mbd) {
@@ -52,6 +53,7 @@ void print_mboot_info(mboot_info *mbd) {
 }
 
 void kmain(mboot_info *mbd, uint32_t magic) {
+    UNUSED(mbd);
     if ( magic != 0x2BADB002 )
     {
     	print("Something went not according to specs.");
@@ -67,12 +69,12 @@ void kmain(mboot_info *mbd, uint32_t magic) {
 	init_pics(0x20, 0x28);
         print("initializing keyboard...\n");
         init_keyboard();
-        //print("enabling keyboard interrupts...\n");
-        //enable_irq(1);
+        print("enabling keyboard interrupts...\n");
+        enable_irq(1);
         send_eoi(0);
         __asm__ __volatile__ ("sti");
 	cprint("Hello OS\n", 2);
-        print_mboot_info(mbd);
+        //print_mboot_info(mbd);
 	update_cursor();
         while(1); // the command prompt below stops keyboard interrupts from working
 	while(1){

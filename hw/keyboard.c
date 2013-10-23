@@ -1,11 +1,9 @@
 #include "keyboard.h"
 #include "port.h"
 #include "screen.h"
-//int ccol;
 int led_stat=0;
-//int crow;
 
-char keys[] = {'E', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'B', 'T', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'N', 'C', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '`', 'S', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'S', 'A', ' ', 'C'}; 
+#include "scancode.h"
 
 void init_keyboard() {
     // I have no idea if this is correct
@@ -56,13 +54,11 @@ int scan(){
 		oldkey=key;
 		key=inportb(0x60);
 		if(!(oldkey==key)){
-		
 			return key;
 		}
 	}
 }
 char getchar(){
-//	int code = 0;
 	char key;	
 
 	outportb(KBD_ENCODER_REG, KBD_ENC_CMD_ENABLE);
@@ -75,7 +71,8 @@ char getchar(){
 	//					
 	//	}
 	
-		 key = keys[scan()];		
+                int scancode = scan();
+		 key = scancode_to_ascii[scancode&0x7f];
 		
 
 		
