@@ -4,3 +4,5 @@ kernel.elf
 floppy.img
 *~
 test/test_string
+test/test_sprintf
+cross

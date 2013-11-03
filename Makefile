@@ -1,7 +1,6 @@
-MAKE = make
-CC = gcc
-CFLAGS = -std=c99 -g -m32 -Wall -Wextra -Werror -nostdlib -fno-builtin -nostartfiles -nodefaultlibs -I.
-LD = ld
+PATH := $(PATH):/opt/cross/bin
+CC = i586-elf-gcc
+CFLAGS = -std=c99 -g -Wall -Wextra -Werror -ffreestanding -nostdlib -nostartfiles -nodefaultlibs -lgcc
 
 OBJS = kernel.o string.o hw/port.o loader.o hw/pic.o hw/screen.o hw/keyboard.o mem/gdt.o mem/setgdt.o hw/idt.o hw/isr_handler.o hw/setidt.o hw/isr_wrapper.o cbuf.o shell/shell.o shell/builtins/bootinfo.o
 
@@ -20,7 +19,7 @@ $(FLOPPY_IMG): $(KERNELFN)
 
 
 $(KERNELFN): $(OBJS)
-	$(LD) -melf_i386 -T linker.ld -o $@ $^
+	$(CC) $(CFLAGS) -T linker.ld -o $@ $^
 
 .s.o:
 	as --32 -o $@ $<
@@ -33,5 +32,5 @@ $(KERNELFN): $(OBJS)
 test:
 	@$(MAKE) -C test test
 clean:
-	-rm *.o $(KERNELFN) $(FLOPPY_IMG)
+	rm -f *.o $(KERNELFN) $(FLOPPY_IMG)
 	@$(MAKE) -C test clean
