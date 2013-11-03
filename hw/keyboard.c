@@ -17,11 +17,7 @@ void init_keyboard() {
     outportb(KBD_CONTROLLER_REG, KBD_CTL_CMD_READ_CMD);
     char cmd = inportb(KBD_CONTROLLER_REG);
 
-    print("keyboard command byte: 0x");
-    char cmdStr[3];
-    itoa(cmd, cmdStr, 16);
-    print(cmdStr);
-    print("\n");
+    printf("keyboard command byte: %#x\n", cmd);
     outportb(KBD_CONTROLLER_REG, KBD_CTL_CMD_WRITE_CMD);
     outportb(KBD_CONTROLLER_REG, cmd | KBD_CMD_KEYBOARD_INTERRUPT);
 

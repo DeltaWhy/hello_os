@@ -15,10 +15,7 @@ void isr_handler(registers_t regs)
             send_eoi(1);
             break;
         default:
-            print("interrupt ");
-            char int_no[12];
-            print(itoa(regs.int_no, int_no, 10));
-            print("\n");
+            printf("interrupt %d\n", regs.int_no);
             break;
     }
 }

@@ -1,5 +1,6 @@
 #include "port.h"
 #include "screen.h"
+#include "sprintf.h"
 
 volatile unsigned char *videoram = (unsigned char *)0xB8000;
 volatile unsigned char *cursor = (unsigned char *)0xB8000;
@@ -111,4 +112,16 @@ char * itoa( int value, char * str, int base )
         *ptr-- = tmp;
     }
     return rc;
+}
+
+static char printbuf[1024];
+int printf(const char *fmt, ...) {
+    // TODO - make this work for strings longer than 1024
+    va_list ap;
+    int i;
+    va_start(ap, fmt);
+    i = vsprintf(printbuf, fmt, ap);
+    va_end(ap);
+    print(printbuf);
+    return i;
 }

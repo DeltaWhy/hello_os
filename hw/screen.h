@@ -12,4 +12,5 @@ void scroll();
 char * itoa( int value, char * str, int base );
 extern volatile unsigned char *videoram;
 extern volatile unsigned char *cursor;
+int printf(const char *format, ...);
 #endif

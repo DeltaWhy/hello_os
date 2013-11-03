@@ -1,9 +1,10 @@
 #include "sprintf.h"
 #include "string.h"
 #include "globals.h"
-#include <ctype.h>
 #include <stdint.h>
 #include <stdbool.h>
+
+#define isdigit(c) (c >= '0' && c <= '9')
 int sprintf(char *str, const char *fmt, ...) {
     va_list ap;
     int i;
@@ -48,8 +49,8 @@ struct printf_status {
     int length;
 };
 
-static void print_char(char **buf, size_t size, struct printf_status *status, va_list ap) {
-    unsigned char c = va_arg(ap, unsigned int);
+static void print_char(char **buf, size_t size, struct printf_status *status, int x) {
+    unsigned char c = (unsigned char)x;
     while (status->width > 1 && !(status->flags & FLAG_LEFT)) {
         if (status->n < size) *(*buf)++ = ' ';
         status->n++;
@@ -64,8 +65,7 @@ static void print_char(char **buf, size_t size, struct printf_status *status, va
     }
 }
 
-static void print_str(char **buf, size_t size, struct printf_status *status, va_list ap) {
-    const char *s = va_arg(ap, const char *);
+static void print_str(char **buf, size_t size, struct printf_status *status, const char *s) {
     size_t l = strlen(s);
     if (status->precision >= 0 && status->precision < (int)l) l = status->precision;
     while (status->width > (int)l && !(status->flags & FLAG_LEFT)) {
@@ -86,34 +86,7 @@ static void print_str(char **buf, size_t size, struct printf_status *status, va_
     }
 }
 
-static void print_signed(char **buf, size_t size, struct printf_status *status, va_list ap) {
-    intmax_t x;
-    switch(status->length) {
-        case LENGTH_CHAR:
-            x = va_arg(ap, int);
-            break;
-        case LENGTH_SHORT:
-            x = va_arg(ap, int);
-            break;
-        case LENGTH_LONG:
-            x = va_arg(ap, long);
-            break;
-        case LENGTH_LONGLONG:
-            x = va_arg(ap, long long);
-            break;
-        case LENGTH_INTMAX:
-            x = va_arg(ap, intmax_t);
-            break;
-        case LENGTH_SIZE:
-            x = va_arg(ap, size_t);
-            break;
-        case LENGTH_PTRDIFF:
-            x = va_arg(ap, ptrdiff_t);
-            break;
-        default:
-            x = va_arg(ap, int);
-            break;
-    }
+static void print_signed(char **buf, size_t size, struct printf_status *status, intmax_t x) {
     char s[3*sizeof(intmax_t)]; // decimal takes at most 3 chars/byte
     bool negative = false;
     if (x < 0) {
@@ -162,34 +135,7 @@ static void print_signed(char **buf, size_t size, struct printf_status *status, 
     }
 }
 
-static void print_unsigned(char **buf, size_t size, struct printf_status *status, char type, va_list ap) {
-    uintmax_t x;
-    switch(status->length) {
-        case LENGTH_CHAR:
-            x = va_arg(ap, int);
-            break;
-        case LENGTH_SHORT:
-            x = va_arg(ap, int);
-            break;
-        case LENGTH_LONG:
-            x = va_arg(ap, long);
-            break;
-        case LENGTH_LONGLONG:
-            x = va_arg(ap, long long);
-            break;
-        case LENGTH_INTMAX:
-            x = va_arg(ap, intmax_t);
-            break;
-        case LENGTH_SIZE:
-            x = va_arg(ap, size_t);
-            break;
-        case LENGTH_PTRDIFF:
-            x = va_arg(ap, ptrdiff_t);
-            break;
-        default:
-            x = va_arg(ap, int);
-            break;
-    }
+static void print_unsigned(char **buf, size_t size, struct printf_status *status, char type, uintmax_t x) {
     char s[3*sizeof(intmax_t)]; // octal takes at most 3 chars/byte
     int base = 10;
     if (type == 'o') base = 8;
@@ -243,33 +189,22 @@ static void print_unsigned(char **buf, size_t size, struct printf_status *status
     }
 }
 
-static void store_length(struct printf_status *status, va_list ap) {
-
-    char *c;
-    short *s;
-    long *l;
-    long long *ll;
-    int *i;
+static void store_length(struct printf_status *status, void *x) {
     switch(status->length) {
         case LENGTH_CHAR:
-            c = va_arg(ap, char *);
-            *c = status->n;
+            *((char *)x) = status->n;
             break;
         case LENGTH_SHORT:
-            s = va_arg(ap, short *);
-            *s = status->n;
+            *((short *)x) = status->n;
             break;
         case LENGTH_LONG:
-            l = va_arg(ap, long *);
-            *l = status->n;
+            *((long *)x) = status->n;
             break;
         case LENGTH_LONGLONG:
-            ll = va_arg(ap, long long *);
-            *ll = status->n;
+            *((long long *)x) = status->n;
             break;
         default:
-            i = va_arg(ap, int *);
-            *i = status->n;
+            *((int *)x) = status->n;
             break;
     }
 }
@@ -380,13 +315,63 @@ int vsnprintf(char *str, size_t size, const char *fmt, va_list ap) {
         switch (*fmt) {
             case 'd':
             case 'i':
-                print_signed(&buf, size, &status, ap);
+                switch(status.length) {
+                    case LENGTH_CHAR:
+                        print_signed(&buf, size, &status, va_arg(ap, int));
+                        break;
+                    case LENGTH_SHORT:
+                        print_signed(&buf, size, &status, va_arg(ap, int));
+                        break;
+                    case LENGTH_LONG:
+                        print_signed(&buf, size, &status, va_arg(ap, long));
+                        break;
+                    case LENGTH_LONGLONG:
+                        print_signed(&buf, size, &status, va_arg(ap, long long));
+                        break;
+                    case LENGTH_INTMAX:
+                        print_signed(&buf, size, &status, va_arg(ap, intmax_t));
+                        break;
+                    case LENGTH_SIZE:
+                        print_signed(&buf, size, &status, va_arg(ap, size_t));
+                        break;
+                    case LENGTH_PTRDIFF:
+                        print_signed(&buf, size, &status, va_arg(ap, ptrdiff_t));
+                        break;
+                    default:
+                        print_signed(&buf, size, &status, va_arg(ap, int));
+                        break;
+                }
                 break;
             case 'o':
             case 'u':
             case 'x':
             case 'X':
-                print_unsigned(&buf, size, &status, *fmt, ap);
+                switch(status.length) {
+                    case LENGTH_CHAR:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, int));
+                        break;
+                    case LENGTH_SHORT:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, int));
+                        break;
+                    case LENGTH_LONG:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, long));
+                        break;
+                    case LENGTH_LONGLONG:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, long long));
+                        break;
+                    case LENGTH_INTMAX:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, intmax_t));
+                        break;
+                    case LENGTH_SIZE:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, size_t));
+                        break;
+                    case LENGTH_PTRDIFF:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, ptrdiff_t));
+                        break;
+                    default:
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, int));
+                        break;
+                }
                 break;
             case 'e':
             case 'E':
@@ -405,17 +390,17 @@ int vsnprintf(char *str, size_t size, const char *fmt, va_list ap) {
                 // hex float
                 break;
             case 'c':
-                print_char(&buf, size, &status, ap);
+                print_char(&buf, size, &status, va_arg(ap, int));
                 break;
             case 's':
-                print_str(&buf, size, &status, ap);
+                print_str(&buf, size, &status, va_arg(ap, char *));
                 break;
             case 'p':
                 status.flags |= FLAG_ALT;
-                print_unsigned(&buf, size, &status, 'x', ap);
+                print_unsigned(&buf, size, &status, 'x', (uint32_t)va_arg(ap, void *));
                 break;
             case 'n':
-                store_length(&status, ap);
+                store_length(&status, va_arg(ap, void *));
                 break;
             case '%':
                 if (status.n < size) *buf++ = '%';

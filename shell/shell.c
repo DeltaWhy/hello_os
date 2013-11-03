@@ -23,8 +23,7 @@ void shell() {
             }
         }
         if (!found) {
-            print(input);
-            print(": command not found");
+            printf("%s: command not found", input);
         }
         continue;
     }
@@ -40,11 +39,7 @@ void help(int argc, char **argv) {
     UNUSED(argv);
     print("supported commands:\n");
     for (int i=0; i < num_builtins; i++) {
-        print("    ");
-        print((char *)builtins[i].name);
-        print(" - ");
-        print((char *)builtins[i].description);
-        print("\n");
+        printf("    %s - %s\n", builtins[i].name, builtins[i].description);
     }
 }
 builtin help_builtin = {&help, "help", "Prints this message."};
