@@ -22,16 +22,18 @@ $(FLOPPY_IMG): $(KERNELFN)
 $(KERNELFN): $(OBJS)
 	$(CC) $(CFLAGS) -T linker.ld -o $@ $^ $(LDFLAGS)
 
+-include $(OBJS:.o=.d)
+
 .s.o:
 	as --32 -o $@ $<
 
 .c.o:
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -MD -o $@ -c $<
 
 .PHONY: test clean
 
 test:
 	@$(MAKE) -C test test
 clean:
-	rm -f *.o $(KERNELFN) $(FLOPPY_IMG)
+	rm -f $(OBJS) $(OBJS:.o=.d) $(KERNELFN) $(FLOPPY_IMG)
 	@$(MAKE) -C test clean

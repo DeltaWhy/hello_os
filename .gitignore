@@ -1,4 +1,5 @@
 *.o
+*.d
 *.log
 kernel.elf
 floppy.img
