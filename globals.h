@@ -9,4 +9,6 @@
 #define wait()
 #endif
 
+void panic(const char *err);
+
 #endif

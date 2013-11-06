@@ -71,6 +71,15 @@ void crash(int argc, char **argv) {
 }
 builtin crash_builtin = {&crash, "crash", "Tests CPU exception handling by dividing by 0."};
 
+void test_panic(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    print("panicking...\n");
+    panic("panic test");
+    print("this should never print");
+}
+builtin panic_builtin = {&test_panic, "panic", "Tests kernel panic function."};
+
 extern builtin bootinfo_builtin;
 
 void init_shell_builtins() {
@@ -78,6 +87,7 @@ void init_shell_builtins() {
     register_builtin(clear_builtin);
     register_builtin(interrupt_builtin);
     register_builtin(crash_builtin);
+    register_builtin(panic_builtin);
     register_builtin(bootinfo_builtin);
 }
 

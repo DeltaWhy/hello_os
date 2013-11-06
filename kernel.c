@@ -9,7 +9,9 @@
 #include "hw/idt.h"
 #include "mem/gdt.h"
 #include "shell/shell.h"
+#include "mem/pmm.h"
 void exit(void);
+void test_pmm();
 
 void kmain(uint32_t magic) {
     if ( magic != 0x2BADB002 )
@@ -31,6 +33,8 @@ void kmain(uint32_t magic) {
         enable_irq(1);
         send_eoi(0);
         __asm__ __volatile__ ("sti");
+        print("initializing physical memory manager...\n");
+        init_pmm();
         print("initializing shell...\n");
         init_shell_builtins();
 	cprint("Hello OS\n", 2);
@@ -40,4 +44,11 @@ void kmain(uint32_t magic) {
 void exit(void){
 	while(inportb(0x64) & 0x02);
 	outportb(0x64, 0xFE);
+}
+
+void panic(const char *err) {
+    cprint("KERNEL PANIC: ", 0x04);
+    printf("%s\n", err);
+    __asm__ __volatile__ ("cli");
+    while (1) __asm__ ("hlt");
 }
