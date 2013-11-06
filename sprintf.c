@@ -136,7 +136,7 @@ static void print_signed(char **buf, size_t size, struct printf_status *status, 
 }
 
 static void print_unsigned(char **buf, size_t size, struct printf_status *status, char type, uintmax_t x) {
-    char s[3*sizeof(intmax_t)]; // octal takes at most 3 chars/byte
+    char s[3*sizeof(uintmax_t)]; // octal takes at most 3 chars/byte
     int base = 10;
     if (type == 'o') base = 8;
     if (type == 'x') base = 16;
@@ -348,19 +348,19 @@ int vsnprintf(char *str, size_t size, const char *fmt, va_list ap) {
             case 'X':
                 switch(status.length) {
                     case LENGTH_CHAR:
-                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, int));
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, unsigned int));
                         break;
                     case LENGTH_SHORT:
-                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, int));
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, unsigned int));
                         break;
                     case LENGTH_LONG:
-                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, long));
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, unsigned long));
                         break;
                     case LENGTH_LONGLONG:
-                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, long long));
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, unsigned long long));
                         break;
                     case LENGTH_INTMAX:
-                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, intmax_t));
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, uintmax_t));
                         break;
                     case LENGTH_SIZE:
                         print_unsigned(&buf, size, &status, *fmt, va_arg(ap, size_t));
@@ -369,7 +369,7 @@ int vsnprintf(char *str, size_t size, const char *fmt, va_list ap) {
                         print_unsigned(&buf, size, &status, *fmt, va_arg(ap, ptrdiff_t));
                         break;
                     default:
-                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, int));
+                        print_unsigned(&buf, size, &status, *fmt, va_arg(ap, unsigned int));
                         break;
                 }
                 break;
