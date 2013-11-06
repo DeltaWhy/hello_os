@@ -3,6 +3,7 @@ ENTRY (loader)
 SECTIONS
 {
     . = 0x00100000;
+    kernel_start = .;
 
     .text ALIGN (0x1000) :
     {
@@ -26,4 +27,5 @@ SECTIONS
         *(.bss)
         ebss = .;
     }
+    kernel_end = .;
 }

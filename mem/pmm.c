@@ -10,6 +10,9 @@ static uint32_t mmap[MMAP_LENGTH];
 #define MMAP_INDEX(addr) ((uint32_t)addr >> 17)
 #define MMAP_OFFSET(addr) (((uint32_t)addr >> 12) & 0x1F)
 
+extern const char kernel_start[];
+extern const char kernel_end[];
+
 void init_pmm() {
     // initially mark all memory as unavailable
     for (int i=0; i < MMAP_LENGTH; i++) {
@@ -33,6 +36,9 @@ void init_pmm() {
 
     // mark first frame used so we only return 0 on error
     mmap[0] |= 0x1;
+
+    // mark kernel memory as reserved so we don't accidentally overwrite it
+    pmm_reserve_frames((paddr_t)kernel_start, ((kernel_end-kernel_start)>>12)+1);
 }
 
 paddr_t pmm_alloc_frames(int n) {
@@ -85,11 +91,27 @@ void pmm_free_frames(paddr_t addr, int n) {
     int i = MMAP_INDEX(addr);
     int j = MMAP_OFFSET(addr);
     while (n > 0) {
+        if (!(mmap[i] & (1<<j))) panic("tried to free frame twice");
         mmap[i] &= ~(1<<j);
         j = (j+1)%32;
         if (j == 0) i++;
         n--;
     }
+}
+
+void pmm_reserve_frames(paddr_t addr, int n) {
+    int i = MMAP_INDEX(addr);
+    int j = MMAP_OFFSET(addr);
+    while (n > 0) {
+        mmap[i] |= (1<<j);
+        j = (j+1)%32;
+        if (j == 0) i++;
+        n--;
+    }
+}
+
+bool pmm_is_free(paddr_t addr) {
+    return !(mmap[MMAP_INDEX(addr)] & (1<<MMAP_OFFSET(addr)));
 }
 
 /* some sanity checks

@@ -13,6 +13,9 @@
 void exit(void);
 void test_pmm();
 
+extern const char kernel_start[];
+extern const char kernel_end[];
+
 void kmain(uint32_t magic) {
     if ( magic != 0x2BADB002 )
     {
@@ -21,6 +24,7 @@ void kmain(uint32_t magic) {
     }
 
 	kclear();
+        printf("kernel loaded at %p, ends at %p\n", kernel_start, kernel_end);
         print("initializing GDT...\n");
         init_gdt();
         print("initializing IDT...\n");
@@ -35,6 +39,7 @@ void kmain(uint32_t magic) {
         __asm__ __volatile__ ("sti");
         print("initializing physical memory manager...\n");
         init_pmm();
+        if (pmm_is_free((paddr_t)kernel_start) || pmm_is_free((paddr_t)kernel_end)) panic("kernel memory is not reserved");
         print("initializing shell...\n");
         init_shell_builtins();
 	cprint("Hello OS\n", 2);

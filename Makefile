@@ -8,6 +8,10 @@ OBJS = kernel.o string.o hw/port.o loader.o hw/pic.o hw/screen.o hw/keyboard.o m
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img
 
+.PHONY: test clean all
+
+all: $(FLOPPY_IMG) syms
+
 $(FLOPPY_IMG): $(KERNELFN)
 	rm -f $@
 	cp grub_dos.img $@
@@ -30,10 +34,11 @@ $(KERNELFN): $(OBJS)
 .c.o:
 	$(CC) $(CFLAGS) -MD -o $@ -c $<
 
-.PHONY: test clean
+syms: $(KERNELFN)
+	objdump -t $< | sed -nre 's/^([0-9a-f]+).*\s(\S+)$$/\1 \2/p' > $@
 
 test:
 	@$(MAKE) -C test test
 clean:
-	rm -f $(OBJS) $(OBJS:.o=.d) $(KERNELFN) $(FLOPPY_IMG)
+	rm -f $(OBJS) $(OBJS:.o=.d) $(KERNELFN) $(FLOPPY_IMG) syms
 	@$(MAKE) -C test clean
