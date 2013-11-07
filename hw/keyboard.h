@@ -8,6 +8,20 @@ enum KBD_INFO_MODE {
     KBD_INFO_MODE_RAW = 0x2,
     KBD_INFO_MODE_LINE = 0x4
 };
+enum KBD_HELD {
+    KBD_HELD_LSHIFT = 0x1,
+    KBD_HELD_RSHIFT = 0x2,
+    KBD_HELD_LCTRL = 0x4,
+    KBD_HELD_RCTRL = 0x8,
+    KBD_HELD_LALT = 0x10,
+    KBD_HELD_RALT = 0x20,
+    KBD_HELD_LSUPER = 0x40,
+    KBD_HELD_RSUPER = 0x80,
+    KBD_HELD_NUMLOCK = 0x100,
+    KBD_HELD_CAPSLOCK = 0x200,
+    KBD_HELD_SCROLLLOCK = 0x400,
+    KBD_HELD_INSERT = 0x800
+};
 typedef struct kbd_info {
     uint32_t mode;
     uint32_t held;
@@ -81,5 +95,6 @@ char getchar();
 char * kgets(char * buf);
 void klights();
 void kbd_set_mode(uint32_t mode);
+char scancode_to_ascii(int scancode);
 #endif
 

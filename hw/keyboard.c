@@ -1,12 +1,12 @@
-#include "../globals.h"
-#include "keyboard.h"
-#include "port.h"
-#include "screen.h"
-#include "../string.h"
-#include "../cbuf.h"
+#include "globals.h"
+#include "hw/keyboard.h"
+#include "hw/port.h"
+#include "hw/screen.h"
+#include "string.h"
+#include "cbuf.h"
 int led_stat=0;
 
-#include "scancode.h"
+#include "hw/scancode.h"
 
 static cbuf key_buf;
 static cbuf line_buf;
@@ -34,8 +34,36 @@ void keyboard_irq_handler() {
     if (keyboard.mode & KBD_INFO_MODE_RAW) {
         cbuf_push(&key_buf, scancode);
     }
+    // handle special keys
+    switch (scancode & ~(0x80)) {
+        case SCAN_LSHIFT:
+            if (scancode & 0x80) {
+                keyboard.held &= ~(KBD_HELD_LSHIFT);
+            } else {
+                keyboard.held |= KBD_HELD_LSHIFT;
+            }
+            break;
+        case SCAN_RSHIFT:
+            if (scancode & 0x80) {
+                keyboard.held &= ~(KBD_HELD_RSHIFT);
+            } else {
+                keyboard.held |= KBD_HELD_RSHIFT;
+            }
+            break;
+        case SCAN_CAPSLOCK:
+            if (!(scancode & 0x80)) {
+                keyboard.held ^= KBD_HELD_CAPSLOCK;
+                if (keyboard.held & KBD_HELD_CAPSLOCK) {
+                    led_stat |= KBD_LED_CAPS;
+                } else {
+                    led_stat &= ~(KBD_LED_CAPS);
+                }
+                klights();
+            }
+            break;
+    }
     if (!(scancode & 0x80)) {
-        char c = scancode_to_ascii[scancode];
+        char c = scancode_to_ascii(scancode);
         if (c && keyboard.mode & KBD_INFO_MODE_ECHO) {
             kputc(c, 0x07);
         }
@@ -63,20 +91,10 @@ void keyboard_irq_handler() {
 
 
 void klights(){
-	if (led_stat == 0){
-		outportb(KBD_ENCODER_REG, KBD_ENC_CMD_SET_LED);
-		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
-		outportb(KBD_ENCODER_REG, KBD_LED_CAPS);
-		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
-		led_stat++;
-	}
-	else if (led_stat == 1){
-		outportb(KBD_ENCODER_REG, KBD_ENC_CMD_SET_LED);
-		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
-		outportb(KBD_ENCODER_REG, 0);
-		while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
-		led_stat=0;
-	}
+    outportb(KBD_ENCODER_REG, KBD_ENC_CMD_SET_LED);
+    while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
+    outportb(KBD_ENCODER_REG, led_stat);
+    while(inportb(KBD_CONTROLLER_REG) & KBD_STATS_IN_BUF);
 }
 
 void kbd_set_mode(uint32_t mode) {
@@ -89,6 +107,19 @@ void kbd_set_mode(uint32_t mode) {
         }
     }
     keyboard.mode = mode;
+}
+
+char scancode_to_ascii(int scancode) {
+    if (keyboard.held & (KBD_HELD_LSHIFT | KBD_HELD_RSHIFT) &&
+            keyboard.held & KBD_HELD_CAPSLOCK) {
+        return scan_shift_caps[scancode];
+    } else if (keyboard.held & (KBD_HELD_LSHIFT | KBD_HELD_RSHIFT)) {
+        return scan_shift[scancode];
+    } else if (keyboard.held & KBD_HELD_CAPSLOCK) {
+        return scan_caps[scancode];
+    } else {
+        return scan_normal[scancode];
+    }
 }
 
 char getchar(){
