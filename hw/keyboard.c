@@ -61,16 +61,22 @@ void keyboard_irq_handler() {
                 klights();
             }
             break;
+        case SCAN_BACKSPACE:
+            if (keyboard.mode & KBD_INFO_MODE_LINE && !(scancode & 0x80)) {
+                if (cbuf_unpush(&line_buf)) screen_backspace();
+            }
+            break;
     }
     if (!(scancode & 0x80)) {
         char c = scancode_to_ascii(scancode);
-        if (c && keyboard.mode & KBD_INFO_MODE_ECHO) {
+        // characters below \t and above 127 are non-printing
+        if (c >= '\t' && c < 128 && keyboard.mode & KBD_INFO_MODE_ECHO) {
             kputc(c, 0x07);
         }
         if (c && !(keyboard.mode & (KBD_INFO_MODE_RAW | KBD_INFO_MODE_LINE))) {
             // character mode
             cbuf_push(&key_buf, c);
-        } else if (c && KBD_INFO_MODE_LINE) {
+        } else if (c >= '\t' && c < 128 && keyboard.mode & KBD_INFO_MODE_LINE) {
             if (c == '\n') {
                 while (!cbuf_empty(&line_buf)) {
                     cbuf_push(&key_buf, cbuf_pop(&line_buf));

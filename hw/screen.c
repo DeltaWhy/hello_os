@@ -58,6 +58,14 @@ void kputc(char c, char col) {
     update_cursor();
 }
 
+// TODO - this doesn't really belong in this file
+void screen_backspace() {
+    if (cursor == videoram) return;
+    cursor -= 2;
+    cursor[0] = ' ';
+    update_cursor();
+}
+
 void scroll(){
     int i;
     int offset = cursor - videoram;

@@ -2,6 +2,7 @@
 #define SCAN_LSHIFT 0x2a
 #define SCAN_RSHIFT 0x36
 #define SCAN_CAPSLOCK 0x3a
+#define SCAN_BACKSPACE 0x0e
 
 static char scan_normal[] = {
     /* 0x00 */ 0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',

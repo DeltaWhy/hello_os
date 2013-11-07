@@ -14,6 +14,8 @@ void cbuf_new(cbuf *buf);
 void cbuf_push(cbuf *buf, char c);
 char cbuf_pop(cbuf *buf);
 char cbuf_peek(cbuf *buf);
+void cbuf_unpop(cbuf *buf, char c);
+char cbuf_unpush(cbuf *buf);
 
 int cbuf_empty(cbuf *buf);
 int cbuf_read(cbuf *buf, char *out, int length);

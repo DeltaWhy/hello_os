@@ -26,6 +26,18 @@ char cbuf_peek(cbuf *buf){
     return buf->data[buf->start];
 }
 
+void cbuf_unpop(cbuf *buf, char c){
+    int i = (buf->start+buf->size-1) % buf->size;
+    if (i == buf->end) return;
+    buf->start = i;
+    buf->data[buf->start] = c;
+}
+
+char cbuf_unpush(cbuf *buf){
+    if (cbuf_empty(buf)) return '\0';
+    buf->end = (buf->end+buf->size-1) % buf->size;
+    return buf->data[buf->end];
+}
 
 int cbuf_empty(cbuf *buf){
     return buf->start == buf->end;

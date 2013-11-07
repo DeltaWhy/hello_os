@@ -6,6 +6,7 @@
 void update_cursor();
 void kclear();
 void kputc(char c, char col);
+void screen_backspace();
 void print(char * str);
 void cprint(char * str, char col);
 void scroll();
