@@ -3,6 +3,11 @@ set -e
 BINUTILS=binutils-2.23.2
 GCC=gcc-4.8.2
 
+# dependencies for debian/ubuntu
+if grep 'Debian' /etc/issue || grep 'Ubuntu' /etc/issue; then
+    sudo apt-get install texinfo libgmp-dev libmpfr-dev libmpc-dev
+fi
+
 cd `dirname $0`
 mkdir -p cross
 cd cross
