@@ -10,6 +10,7 @@
 #include "mem/gdt.h"
 #include "shell/shell.h"
 #include "mem/pmm.h"
+#include "mem/vmm.h"
 void exit(void);
 void test_pmm();
 
@@ -40,6 +41,10 @@ void kmain(uint32_t magic) {
         print("initializing physical memory manager...\n");
         init_pmm();
         if (pmm_is_free((paddr_t)kernel_start) || pmm_is_free((paddr_t)kernel_end)) panic("kernel memory is not reserved");
+        if (pmm_is_free((paddr_t)0xb8000)) panic("video ram is not reserved");
+        print("initializing virtual memory manager...\n");
+        init_vmm();
+        vmm_test();
         print("initializing shell...\n");
         init_shell_builtins();
 	cprint("Hello OS\n", 2);
@@ -54,6 +59,8 @@ void exit(void){
 void panic(const char *err) {
     cprint("KERNEL PANIC: ", 0x04);
     printf("%s\n", err);
+    // magic breakpoint for bochs debugger
+    __asm__ __volatile__ ("xchg %bx, %bx");
     __asm__ __volatile__ ("cli");
     while (1) __asm__ ("hlt");
 }
