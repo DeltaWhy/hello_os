@@ -70,13 +70,13 @@ void keyboard_irq_handler() {
     if (!(scancode & 0x80)) {
         char c = scancode_to_ascii(scancode);
         // characters below \t and above 127 are non-printing
-        if (c >= '\t' && c < 128 && keyboard.mode & KBD_INFO_MODE_ECHO) {
+        if (c >= '\t' && keyboard.mode & KBD_INFO_MODE_ECHO) {
             kputc(c, 0x07);
         }
         if (c && !(keyboard.mode & (KBD_INFO_MODE_RAW | KBD_INFO_MODE_LINE))) {
             // character mode
             cbuf_push(&key_buf, c);
-        } else if (c >= '\t' && c < 128 && keyboard.mode & KBD_INFO_MODE_LINE) {
+        } else if (c >= '\t' && keyboard.mode & KBD_INFO_MODE_LINE) {
             if (c == '\n') {
                 while (!cbuf_empty(&line_buf)) {
                     cbuf_push(&key_buf, cbuf_pop(&line_buf));
