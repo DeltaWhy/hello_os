@@ -12,7 +12,6 @@
 #include "mem/pmm.h"
 #include "mem/vmm.h"
 void exit(void);
-void test_pmm();
 
 extern const char kernel_start[];
 extern const char kernel_end[];
@@ -44,7 +43,6 @@ void kmain(uint32_t magic) {
         if (pmm_is_free((paddr_t)0xb8000)) panic("video ram is not reserved");
         print("initializing virtual memory manager...\n");
         init_vmm();
-        vmm_test();
         print("initializing shell...\n");
         init_shell_builtins();
 	cprint("Hello OS\n", 2);

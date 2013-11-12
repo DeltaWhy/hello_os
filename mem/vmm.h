@@ -26,6 +26,7 @@ void init_vmm();
 void vmm_test();
 void vmm_alloc_page(vaddr_t vaddr, int flags);
 void vmm_map_page(vaddr_t vaddr, paddr_t paddr, int flags);
+int vmm_get_flags(vaddr_t vaddr);
 void vmm_set_flags(vaddr_t vaddr, int flags);
 void vmm_unset_flags(vaddr_t vaddr, int flags);
 void vmm_unmap_page(vaddr_t vaddr);

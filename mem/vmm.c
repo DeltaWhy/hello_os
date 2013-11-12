@@ -88,6 +88,17 @@ void vmm_map_page(vaddr_t vaddr, paddr_t paddr, int flags) {
     }
 }
 
+int vmm_get_flags(vaddr_t vaddr) {
+    if (!(pagedir[PD_INDEX(vaddr)] & VMM_PTE_FLAG_PRESENT)) {
+        return 0;
+    }
+    pte_t *pt = (pte_t *)(pagedir[PD_INDEX(vaddr)] & VMM_PTE_MASK_FRAME);
+    if (!(pt[PT_INDEX(vaddr)] & VMM_PTE_FLAG_PRESENT)) {
+        return 0;
+    }
+    return pt[PT_INDEX(vaddr)] & ~(VMM_PTE_MASK_FRAME);
+}
+
 void vmm_set_flags(vaddr_t vaddr, int flags) {
     if (!(pagedir[PD_INDEX(vaddr)] & VMM_PTE_FLAG_PRESENT)) {
         char err[1024];
