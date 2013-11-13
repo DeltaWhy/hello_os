@@ -1,6 +1,6 @@
 #include <assert.h>
-#include "sprintf.h"
-#include "string.h"
+#include "../sprintf.h"
+#include "../string.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
