@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "globals.h"
-#include "string.h"
+#include <string.h>
 #include "mboot.h"
 #include "hw/pic.h"
 #include "hw/port.h"

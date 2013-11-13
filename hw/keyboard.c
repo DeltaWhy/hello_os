@@ -2,7 +2,7 @@
 #include "hw/keyboard.h"
 #include "hw/port.h"
 #include "hw/screen.h"
-#include "string.h"
+#include <string.h>
 #include "cbuf.h"
 int led_stat=0;
 

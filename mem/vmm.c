@@ -1,7 +1,7 @@
 #include "mem/vmm.h"
 #include "mem/pmm.h"
-#include "sprintf.h"
-#include "string.h"
+#include <stdio.h>
+#include <string.h>
 #include "globals.h"
 #include "hw/screen.h"
 #include "assert.h"

@@ -1,5 +1,6 @@
 *.o
 *.d
+*.a
 *.log
 kernel.elf
 floppy.img
@@ -8,3 +9,4 @@ test/test_string
 test/test_sprintf
 cross
 syms
+pdclib/helloworld

@@ -1,0 +1,2 @@
+SubDir PDCLIB_TOP platform hello_os ;
+PDCLibConfig ;

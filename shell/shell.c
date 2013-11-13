@@ -2,7 +2,7 @@
 #include "globals.h"
 #include "shell.h"
 #include "../hw/keyboard.h"
-#include "../string.h"
+#include <string.h>
 #include "../hw/screen.h"
 
 static builtin builtins[MAX_BUILTINS];

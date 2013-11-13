@@ -1,7 +1,6 @@
 #ifndef ASSERT_H
 #define ASSERT_H
-#include "sprintf.h"
-#include "hw/screen.h"
+#include <stdio.h>
 #include "globals.h"
 
 #ifdef NDEBUG
