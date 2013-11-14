@@ -27,7 +27,7 @@ void init_keyboard() {
     keyboard.mode = 0;
     keyboard.held = 0;
 	
-	load_keys("standard");
+    load_keys("standard");
 }
 
 void load_keys (char * scancode){

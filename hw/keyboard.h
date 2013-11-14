@@ -90,6 +90,7 @@ enum KBD_CMD {
 };
 
 void init_keyboard();
+void load_keys(char * scancode);
 void keyboard_irq_handler();
 char getchar();
 char * kgets(char * buf);
