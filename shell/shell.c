@@ -23,7 +23,10 @@ void shell() {
             }
         }
         if (!found) {
-            printf("%s: command not found", input);
+			if (*input==0);
+			
+			else
+            	printf("%s: command not found\n", input);
         }
         continue;
     }
@@ -80,14 +83,34 @@ void test_panic(int argc, char **argv) {
 }
 builtin panic_builtin = {&test_panic, "panic", "Tests kernel panic function."};
 
+void loadkeys(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+	static int status;
+    if (status == 0){
+		load_keys("dvorak");
+		status--;
+	}
+	else if (status == 1){
+		load_keys("standard");
+		status++;
+	}
+}
+builtin loadkeys_builtin = {&loadkeys, "loadkeys", "Toggles keyboard layout. (standard/dvorak)"};
+
+
+
 extern builtin bootinfo_builtin;
 
 void init_shell_builtins() {
+	
     register_builtin(help_builtin);
     register_builtin(clear_builtin);
     register_builtin(interrupt_builtin);
     register_builtin(crash_builtin);
     register_builtin(panic_builtin);
     register_builtin(bootinfo_builtin);
+	register_builtin(loadkeys_builtin);
 }
+
 

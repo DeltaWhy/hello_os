@@ -11,6 +11,7 @@ int led_stat=0;
 static cbuf key_buf;
 static cbuf line_buf;
 static kbd_info keyboard;
+char * scan_normal, scan_shift, scan_caps, scan_shift_caps;
 
 void init_keyboard() {
     // I have no idea if this is correct
@@ -25,6 +26,23 @@ void init_keyboard() {
     cbuf_new(&line_buf);
     keyboard.mode = 0;
     keyboard.held = 0;
+	
+	load_keys("standard");
+}
+
+void load_keys (char * scancode){
+	if (strcmp(scancode, "standard")==0){
+		scan_normal = scan_normal1;
+		//scan_shift = "scan_shift1";
+		//scan_caps = "scan_caps1";
+		//scan_shift_caps = "scan_shift_caps1";
+	}
+	else if (strcmp(scancode, "dvorak")==0){
+		scan_normal = scan_normal_dvorak;
+		//scan_shift = "scan_shift1";
+		//scan_caps = "scan_caps1";
+		//scan_shift_caps = "scan_shift_caps1";
+	}
 }
 
 void keyboard_irq_handler() {
@@ -116,16 +134,18 @@ void kbd_set_mode(uint32_t mode) {
 }
 
 char scancode_to_ascii(int scancode) {
+	
     if (keyboard.held & (KBD_HELD_LSHIFT | KBD_HELD_RSHIFT) &&
             keyboard.held & KBD_HELD_CAPSLOCK) {
-        return scan_shift_caps[scancode];
+        return scan_shift_caps1[scancode];
     } else if (keyboard.held & (KBD_HELD_LSHIFT | KBD_HELD_RSHIFT)) {
-        return scan_shift[scancode];
+        return scan_shift1[scancode];
     } else if (keyboard.held & KBD_HELD_CAPSLOCK) {
-        return scan_caps[scancode];
+        return scan_caps1[scancode];
     } else {
         return scan_normal[scancode];
     }
+return 0;
 }
 
 char getchar(){
