@@ -3,6 +3,7 @@
 #include "globals.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #define isdigit(c) (c >= '0' && c <= '9')
 int sprintf(char *str, const char *fmt, ...) {

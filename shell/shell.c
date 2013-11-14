@@ -102,6 +102,16 @@ builtin loadkeys_builtin = {&loadkeys, "loadkeys", "Toggles keyboard layout. (st
 
 extern builtin bootinfo_builtin;
 
+extern char *kernel_heap_start;
+extern char *kernel_heap_end;
+void heap(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    printf("kernel heap start: %p\n"
+           "              end: %p\n", kernel_heap_start, kernel_heap_end);
+}
+builtin heap_builtin = {&heap, "heap", "Show size of the kernel heap."};
+
 void init_shell_builtins() {
 	
     register_builtin(help_builtin);
@@ -110,7 +120,8 @@ void init_shell_builtins() {
     register_builtin(crash_builtin);
     register_builtin(panic_builtin);
     register_builtin(bootinfo_builtin);
-	register_builtin(loadkeys_builtin);
+    register_builtin(loadkeys_builtin);
+    register_builtin(heap_builtin);
 }
 
 
