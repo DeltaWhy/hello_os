@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -m32 -g -std=c99 -Wall -Wextra -Werror -I..
+CFLAGS = -m32 -g -std=c99 -Wall -Wextra -Werror
 VPATH = ..
 
 TESTS = test_string test_sprintf

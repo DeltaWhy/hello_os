@@ -7,6 +7,7 @@ void init_gdt(void) {
     GDT[1] = create_descriptor(0, 0xFFFFF, GDT_CODE_PL0);
     GDT[2] = create_descriptor(0, 0xFFFFF, GDT_DATA_PL0);
     setGdt(GDT, sizeof(GDT));
+    reloadSegments();
 }
 static gdt_descriptor create_descriptor(uint32_t base, uint32_t limit, uint16_t flag)
 {
