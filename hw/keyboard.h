@@ -2,6 +2,7 @@
 #define KEYBOARD_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 enum KBD_INFO_MODE {
     KBD_INFO_MODE_ECHO = 0x1,
@@ -90,7 +91,7 @@ enum KBD_CMD {
 };
 
 void init_keyboard();
-void load_keys(char * scancode);
+bool load_keys(char * scancode);
 void keyboard_irq_handler();
 char getchar();
 char * kgets(char * buf);

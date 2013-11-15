@@ -30,19 +30,23 @@ void init_keyboard() {
     load_keys("standard");
 }
 
-void load_keys (char * scancode){
+bool load_keys (char * scancode){
 	if (strcmp(scancode, "standard")==0){
 		scan_normal = scan_normal1;
 		//scan_shift = "scan_shift1";
 		//scan_caps = "scan_caps1";
 		//scan_shift_caps = "scan_shift_caps1";
+                return true;
 	}
 	else if (strcmp(scancode, "dvorak")==0){
 		scan_normal = scan_normal_dvorak;
 		//scan_shift = "scan_shift1";
 		//scan_caps = "scan_caps1";
 		//scan_shift_caps = "scan_shift_caps1";
-	}
+                return true;
+	} else {
+            return false;
+        }
 }
 
 void keyboard_irq_handler() {

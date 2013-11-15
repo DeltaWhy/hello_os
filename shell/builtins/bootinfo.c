@@ -4,7 +4,7 @@
 #include "hw/screen.h"
 
 extern mboot_info *boot_info;
-void bootinfo(int argv, char **argc) {
+static void bootinfo(int argv, char **argc) {
     UNUSED(argv);
     UNUSED(argc);
 

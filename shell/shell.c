@@ -1,9 +1,9 @@
 #include <stdbool.h>
 #include "globals.h"
 #include "shell.h"
-#include "../hw/keyboard.h"
-#include "../string.h"
-#include "../hw/screen.h"
+#include "hw/keyboard.h"
+#include "string.h"
+#include "hw/screen.h"
 
 static builtin builtins[MAX_BUILTINS];
 static int num_builtins = 0;
@@ -14,11 +14,21 @@ void shell() {
     while(1) {
         cprint("> ", 0x0A);
         kgets(input);
+
+        // tokenize input
+        int argc=0;
+        char *argv[100];
+        argv[0] = strtok(input, " ");
+        for (int i=0; argv[i] != NULL; i++) {
+            argv[i+1] = strtok(NULL, " ");
+            argc++;
+        }
+
         bool found = false;
         for (int i=0; i < num_builtins; i++) {
-            if (strcmp(input, builtins[i].name) == 0) {
+            if (strcmp(argv[0], builtins[i].name) == 0) {
                 found = true;
-                (*(builtins[i].fn))(0, NULL);
+                (*(builtins[i].fn))(argc, argv);
                 break;
             }
         }
@@ -37,7 +47,7 @@ void register_builtin(builtin b) {
     num_builtins++;
 }
 
-void help(int argc, char **argv) {
+static void help(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     print("supported commands:\n");
@@ -47,14 +57,23 @@ void help(int argc, char **argv) {
 }
 builtin help_builtin = {&help, "help", "Prints this message."};
 
-void clear(int argc, char **argv) {
+static void echo(int argc, char **argv) {
+    for (int i=1; i < argc; i++) {
+        print(argv[i]);
+        if (i < argc-1) print(" ");
+    }
+    print("\n");
+}
+builtin echo_builtin = {&echo, "echo", "Prints the arguments given."};
+
+static void clear(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     kclear();
 }
 builtin clear_builtin = {&clear, "clear", "Clears the screen."};
 
-void interrupt(int argc, char **argv) {
+static void interrupt(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     print("interrupting...\n");
@@ -62,7 +81,7 @@ void interrupt(int argc, char **argv) {
 }
 builtin interrupt_builtin = {&interrupt, "interrupt", "Tests software interrupts."};
 
-void crash(int argc, char **argv) {
+static void crash(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     print("dividing by 0...\n");
@@ -74,7 +93,7 @@ void crash(int argc, char **argv) {
 }
 builtin crash_builtin = {&crash, "crash", "Tests CPU exception handling by dividing by 0."};
 
-void test_panic(int argc, char **argv) {
+static void test_panic(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     print("panicking...\n");
@@ -83,28 +102,11 @@ void test_panic(int argc, char **argv) {
 }
 builtin panic_builtin = {&test_panic, "panic", "Tests kernel panic function."};
 
-void loadkeys(int argc, char **argv) {
-    UNUSED(argc);
-    UNUSED(argv);
-	static int status;
-    if (status == 0){
-		load_keys("dvorak");
-		status--;
-	}
-	else if (status == 1){
-		load_keys("standard");
-		status++;
-	}
-}
-builtin loadkeys_builtin = {&loadkeys, "loadkeys", "Toggles keyboard layout. (standard/dvorak)"};
 
-
-
-extern builtin bootinfo_builtin;
 
 extern char *kernel_heap_start;
 extern char *kernel_heap_end;
-void heap(int argc, char **argv) {
+static void heap(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     printf("kernel heap start: %p\n"
@@ -112,9 +114,12 @@ void heap(int argc, char **argv) {
 }
 builtin heap_builtin = {&heap, "heap", "Show size of the kernel heap."};
 
+extern builtin bootinfo_builtin;
+extern builtin loadkeys_builtin;
+
 void init_shell_builtins() {
-	
     register_builtin(help_builtin);
+    register_builtin(echo_builtin);
     register_builtin(clear_builtin);
     register_builtin(interrupt_builtin);
     register_builtin(crash_builtin);
