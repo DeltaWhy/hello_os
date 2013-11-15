@@ -5,7 +5,14 @@ CFLAGS = -std=c99 -g -Wall -Wextra -Werror -ffreestanding -nostdlib -nostartfile
 LDFLAGS = -lgcc
 ASFLAGS = -g --32
 
-OBJS = kernel.o string.o hw/port.o loader.o hw/pic.o hw/screen.o hw/keyboard.o mem/gdt.o mem/setgdt.o hw/idt.o hw/isr_handler.o hw/setidt.o hw/isr_wrapper.o cbuf.o shell/shell.o shell/builtins/bootinfo.o shell/builtins/loadkeys.o sprintf.o mem/pmm.o mem/vmm.o mem/sbrk.o mem/malloc.o
+OBJS := $(patsubst %.c,%.o,$(shell find . -maxdepth 1 -name "*.c"))
+OBJS += $(patsubst %.s,%.o,$(shell find . -maxdepth 1 -name "*.s"))
+OBJS += $(patsubst %.c,%.o,$(shell find hw -name "*.c"))
+OBJS += $(patsubst %.s,%.o,$(shell find hw -name "*.s"))
+OBJS += $(patsubst %.c,%.o,$(shell find mem -name "*.c"))
+OBJS += $(patsubst %.s,%.o,$(shell find mem -name "*.s"))
+OBJS += $(patsubst %.c,%.o,$(shell find shell -name "*.c"))
+OBJS += $(patsubst %.s,%.o,$(shell find shell -name "*.s"))
 
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img

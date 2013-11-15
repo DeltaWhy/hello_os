@@ -4,6 +4,10 @@ VPATH = ..
 
 TESTS = test_string test_sprintf
 
+.PHONY: clean test
+test: $(TESTS)
+	for x in $^; do ./$$x; done
+
 test_string: string.o ../string.h
 
 test_sprintf: sprintf.o ../sprintf.h
@@ -13,10 +17,6 @@ test_%: test_%.o
 
 .c.o:
 	$(CC) $(CFLAGS) -o $@ -c $<
-
-.PHONY: clean test
-test: $(TESTS)
-	for x in $^; do ./$$x; done
 
 clean:
 	rm -f $(TESTS) *.o
