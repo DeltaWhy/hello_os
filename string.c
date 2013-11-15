@@ -321,3 +321,56 @@ char *strstr(const char * haystack, const char * needle) {
     }
     return NULL;
 }
+
+char *strtok(char *str, const char *delim) {
+    static char *saveptr = NULL;
+    char *tok = strtok_r(str, delim, &saveptr);
+
+    if (!tok) saveptr = NULL;
+    return tok;
+}
+
+char *strtok_r(char *str, const char *delim, char **saveptr) {
+    int i, j;
+
+    if (str == NULL) str = *saveptr;
+    if (str == NULL) return NULL;
+
+    // skip delimiters
+    while (*str != '\0') {
+        bool isdelim = false;
+        for (i=0; delim[i] != '\0'; i++) {
+            if (*str == delim[i]) {
+                isdelim = true;
+                break;
+            }
+        }
+        if (isdelim) {
+            str++;
+        } else {
+            break;
+        }
+    }
+
+    // find next delimiter
+    for (i=0; str[i] != '\0'; i++) {
+        bool isdelim = false;
+        for (j=0; delim[j] != '\0'; j++) {
+            if (str[i] == delim[j]) {
+                isdelim = true;
+                break;
+            }
+        }
+        if (isdelim) {
+            break;
+        }
+    }
+    if (str[i] == '\0') {
+        // last token
+        *saveptr = NULL;
+    } else {
+        str[i] = '\0';
+        *saveptr = str+i+1;
+    }
+    return str;
+}

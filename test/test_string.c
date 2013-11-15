@@ -270,6 +270,22 @@ void test_strstr() {
     assert(strstr(s1, s3) == NULL);
 }
 
+void test_strtok() {
+    char s[] = "this is  a\t test";
+    assert(strcmp(strtok(s, " \t"), "this") == 0);
+    assert(strcmp(strtok(NULL, " \t"), "is") == 0);
+    assert(strcmp(strtok(NULL, " \t"), "a") == 0);
+    assert(strcmp(strtok(NULL, " \t"), "test") == 0);
+    assert(strtok(NULL, " \t") == NULL);
+    assert(strtok(NULL, " \t") == NULL);
+
+    char s2[] = "  another test";
+    assert(strcmp(strtok(s2, " "), "another") == 0);
+    assert(strcmp(strtok(NULL, " "), "test") == 0);
+    assert(strtok(NULL, " ") == NULL);
+    assert(strtok(NULL, " ") == NULL);
+}
+
 int main() {
     test_memccpy();
     test_memchr();
@@ -291,6 +307,7 @@ int main() {
     test_strlen();
     test_strpbrk();
     test_strstr();
+    test_strtok();
 
     return 0;
 }
