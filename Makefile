@@ -7,6 +7,8 @@ ASFLAGS = -g --32
 
 OBJS := $(patsubst %.c,%.o,$(shell find . -maxdepth 1 -name "*.c"))
 OBJS += $(patsubst %.s,%.o,$(shell find . -maxdepth 1 -name "*.s"))
+OBJS += $(patsubst %.c,%.o,$(shell find fs -name "*.c"))
+OBJS += $(patsubst %.s,%.o,$(shell find fs -name "*.s"))
 OBJS += $(patsubst %.c,%.o,$(shell find hw -name "*.c"))
 OBJS += $(patsubst %.s,%.o,$(shell find hw -name "*.s"))
 OBJS += $(patsubst %.c,%.o,$(shell find mem -name "*.c"))

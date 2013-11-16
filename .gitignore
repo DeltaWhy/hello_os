@@ -6,5 +6,6 @@ floppy.img
 *~
 test/test_string
 test/test_sprintf
+test/test_fs
 cross
 syms
