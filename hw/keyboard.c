@@ -4,14 +4,16 @@
 #include "hw/screen.h"
 #include "string.h"
 #include "cbuf.h"
-int led_stat=0;
-
 #include "hw/scancode.h"
+int led_stat=0;
 
 static cbuf key_buf;
 static cbuf line_buf;
 static kbd_info keyboard;
-char * scan_normal, scan_shift, scan_caps, scan_shift_caps;
+char * scan_normal;
+char * scan_shift;
+char * scan_caps;
+char * scan_shift_caps;
 
 void init_keyboard() {
     // I have no idea if this is correct
@@ -32,17 +34,18 @@ void init_keyboard() {
 
 bool load_keys (char * scancode){
 	if (strcmp(scancode, "standard")==0){
+		scan_shift = scan_shift1;
 		scan_normal = scan_normal1;
-		//scan_shift = "scan_shift1";
-		//scan_caps = "scan_caps1";
-		//scan_shift_caps = "scan_shift_caps1";
+
+		scan_caps = scan_caps1;
+		scan_shift_caps = scan_shift_caps1;
                 return true;
 	}
 	else if (strcmp(scancode, "dvorak")==0){
 		scan_normal = scan_normal_dvorak;
-		//scan_shift = "scan_shift1";
-		//scan_caps = "scan_caps1";
-		//scan_shift_caps = "scan_shift_caps1";
+		scan_shift = scan_shift_dvorak;
+		scan_caps = scan_caps_dvorak;
+		scan_shift_caps = scan_shift_caps_dvorak;
                 return true;
 	} else {
             return false;
@@ -141,11 +144,11 @@ char scancode_to_ascii(int scancode) {
 	
     if (keyboard.held & (KBD_HELD_LSHIFT | KBD_HELD_RSHIFT) &&
             keyboard.held & KBD_HELD_CAPSLOCK) {
-        return scan_shift_caps1[scancode];
+        return scan_shift_caps[scancode];
     } else if (keyboard.held & (KBD_HELD_LSHIFT | KBD_HELD_RSHIFT)) {
-        return scan_shift1[scancode];
+        return scan_shift[scancode];
     } else if (keyboard.held & KBD_HELD_CAPSLOCK) {
-        return scan_caps1[scancode];
+        return scan_caps[scancode];
     } else {
         return scan_normal[scancode];
     }
