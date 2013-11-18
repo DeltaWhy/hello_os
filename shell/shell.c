@@ -77,7 +77,7 @@ static void interrupt(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     print("interrupting...\n");
-    __asm__ __volatile__ ("int $33");
+    __asm__ __volatile__ ("int $3");
 }
 builtin interrupt_builtin = {&interrupt, "interrupt", "Tests software interrupts."};
 
@@ -101,6 +101,13 @@ static void test_panic(int argc, char **argv) {
     print("this should never print");
 }
 builtin panic_builtin = {&test_panic, "panic", "Tests kernel panic function."};
+
+static void timer(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    __asm__ __volatile__ ("int $32");
+}
+builtin timer_builtin = {&timer, "timer", "should run 100 ticks on the time. (1 sec at 100hz)"};
 
 
 
@@ -127,6 +134,7 @@ void init_shell_builtins() {
     register_builtin(bootinfo_builtin);
     register_builtin(loadkeys_builtin);
     register_builtin(heap_builtin);
+    register_builtin(timer_builtin);
 }
 
 

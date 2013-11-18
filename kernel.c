@@ -11,6 +11,7 @@
 #include "shell/shell.h"
 #include "mem/pmm.h"
 #include "mem/vmm.h"
+#include "hw/pit.h"
 void exit(void);
 
 extern const char kernel_start[];
@@ -43,9 +44,13 @@ void kmain(uint32_t magic) {
         if (pmm_is_free((paddr_t)0xb8000)) panic("video ram is not reserved");
         print("initializing virtual memory manager...\n");
         init_vmm();
+        print("initializing timer...\n");
+        init_timer(100);
         print("initializing shell...\n");
         init_shell_builtins();
 	cprint("Hello OS\n", 2);
+    
+  
 	update_cursor();
         shell();
 }
