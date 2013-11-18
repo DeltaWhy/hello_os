@@ -46,10 +46,12 @@ void kmain(uint32_t magic) {
         init_vmm();
         print("initializing timer...\n");
         init_timer(100);
+		print("initializing speaker...\n");
+		init_speaker(100);	
         print("initializing shell...\n");
         init_shell_builtins();
 	cprint("Hello OS\n", 2);
-    
+    beep(1,1);
   
 	update_cursor();
         shell();

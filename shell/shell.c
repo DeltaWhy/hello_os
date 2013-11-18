@@ -4,7 +4,7 @@
 #include "hw/keyboard.h"
 #include "string.h"
 #include "hw/screen.h"
-
+#include "hw/pit.h"
 static builtin builtins[MAX_BUILTINS];
 static int num_builtins = 0;
 
@@ -105,9 +105,10 @@ builtin panic_builtin = {&test_panic, "panic", "Tests kernel panic function."};
 static void timer(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    __asm__ __volatile__ ("int $32");
+   // __asm__ __volatile__ ("int $32");
+	delay(1);
 }
-builtin timer_builtin = {&timer, "timer", "should run 100 ticks on the time. (1 sec at 100hz)"};
+builtin timer_builtin = {&timer, "timer", "should run 100 ticks on the timer. (1 sec at 100hz)"};
 
 
 

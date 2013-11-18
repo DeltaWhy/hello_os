@@ -29,8 +29,9 @@ void isr_handler(registers_t regs)
             break;
         case 32:
             // timer
-            for (int i=0;i<100;i++)  
-                timer_callback(regs);  
+            // are we really sure this should be 32?
+            timer_handler(regs);  
+			
             send_eoi(0);
             break;
         case 33:
