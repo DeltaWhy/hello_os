@@ -45,14 +45,14 @@ void kmain(uint32_t magic) {
         print("initializing virtual memory manager...\n");
         init_vmm();
         print("initializing timer...\n");
-        init_timer(100);
+        init_timer(10);
+		enable_irq(0);
 		print("initializing speaker...\n");
-		init_speaker(100);	
+			
         print("initializing shell...\n");
         init_shell_builtins();
-	cprint("Hello OS\n", 2);
-    beep(1,1);
-  
+	beep(100, 1000);
+	cprint("Hello OS\n", 2); 
 	update_cursor();
         shell();
 }

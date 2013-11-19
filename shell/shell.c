@@ -66,6 +66,18 @@ static void echo(int argc, char **argv) {
 }
 builtin echo_builtin = {&echo, "echo", "Prints the arguments given."};
 
+static void shell_beep(int argc, char **argv) {
+    UNUSED(argc);
+	UNUSED(argv);
+
+		beep(1000, 1000);
+}
+
+
+builtin shell_beep_builtin = {&shell_beep, "beep", "try it and find out."};
+
+
+
 static void clear(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
@@ -106,9 +118,9 @@ static void timer(int argc, char **argv) {
     UNUSED(argc);
     UNUSED(argv);
    // __asm__ __volatile__ ("int $32");
-	delay(1);
+	delay(1000);
 }
-builtin timer_builtin = {&timer, "timer", "should run 100 ticks on the timer. (1 sec at 100hz)"};
+builtin timer_builtin = {&timer, "timer", "should run 1000 ticks on the timer. (1 sec at 10hz)"};
 
 
 
@@ -136,6 +148,7 @@ void init_shell_builtins() {
     register_builtin(loadkeys_builtin);
     register_builtin(heap_builtin);
     register_builtin(timer_builtin);
+	register_builtin(shell_beep_builtin);
 }
 
 

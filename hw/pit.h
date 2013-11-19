@@ -9,5 +9,7 @@ void init_timer(int hz);
 void init_speaker(int hz);
 void timer_handler(registers_t regs);
 void delay(int time);
-void beep(unsigned int wait_time,unsigned int times); 
+void play_sound(unsigned long hz); 
+void no_sound();
+void beep(unsigned long length,unsigned long hz);
 #endif

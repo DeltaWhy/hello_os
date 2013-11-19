@@ -4,6 +4,7 @@
 #include "isr.h"
 #include "../globals.h"
 #include "pit.h"
+#include <stdint.h>
 unsigned long counter = 0;
 
 void init_speaker(int hz)
@@ -26,7 +27,9 @@ void init_timer(int hz)
 void timer_handler(registers_t regs)
 {
 	UNUSED(regs);
-	printf("%x\n",counter);
+	//printf("%x\n",counter);
+
+
 	counter++;
 }
 
@@ -35,25 +38,40 @@ void delay(int count)
       unsigned long wait_till;//This is addition of count and the current no of ticks
 
       wait_till = counter + count;
-	printf("%d\n",counter);
+	//printf("%d\n",counter);
       while(counter < wait_till);//loops until the given period has been reached
 }
 
 
-void beep(unsigned int wait_time,unsigned int times ) 
+void play_sound(unsigned long hz) 
 {
-	UNUSED(wait_time);
-     unsigned char tempA = inportb(0x61);
-     unsigned char tempB = (inportb(0x61) & 0xFC);
-     unsigned int count;
+    int divisor = 1193180 / hz;       
+    outportb(PIT_CMDREG , 0x36);             
+    outportb(PIT_CHANNEL0, divisor & 0xFF);   
+    outportb(PIT_CHANNEL0, divisor >> 8);  
+
+	unsigned short tmp;
+	UNUSED(tmp);
+	tmp = inportb(0x61);
+	if (tmp != (tmp | 3)){
+		outportb(0x61, tmp | 3);
 	
-    for(count =0;count == times;count++) 
-    {
-         if (tempA != (tempA | 3)) 
-         {
-              outportb(0x61, tempA | 3);
-         }
-        //delay(wait_time);
-        outportb(0x61, tempB);
-   }
+	}
+}
+
+void nosound()
+{
+	unsigned short tmp=(inportb(0x61) & (0xFC));
+	UNUSED(tmp);
+	outportb(0x61, tmp);
+	
+
+
+}
+
+void beep(unsigned long length,unsigned long hz)
+{
+	play_sound(hz);
+	delay(length);
+	nosound();
 }
