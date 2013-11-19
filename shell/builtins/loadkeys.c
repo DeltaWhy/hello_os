@@ -7,4 +7,4 @@ static void loadkeys(int argc, char **argv) {
     if (argc == 2 && load_keys(argv[1])) return;
     printf("Usage: %s (standard | dvorak)\n", argv[0]);
 }
-builtin loadkeys_builtin = {&loadkeys, "loadkeys", "Toggles keyboard layout. (standard/dvorak)"};
+builtin loadkeys_builtin = {&loadkeys, "loadkeys", "Sets keyboard layout. [layout]"};
