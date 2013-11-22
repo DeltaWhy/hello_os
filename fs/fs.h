@@ -1,7 +1,10 @@
 #ifndef FS_H
 #define FS_H
 #include <stdint.h>
+#include <stdbool.h>
 #include "fs/block_dev.h"
+
+#define MAX_FILESYSTEMS 32
 
 typedef int(*file_io_fn)(char *, uint64_t);
 
@@ -52,4 +55,5 @@ typedef struct file_system {
 } file_system_t;
 
 file_system_t * fs_mount(block_dev_t *device);
+bool fs_unmount(file_system_t *fs);
 #endif

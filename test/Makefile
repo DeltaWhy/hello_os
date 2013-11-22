@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -m32 -g -std=c99 -Wall -Wextra -Werror -DDEBUG
-VPATH = ..
+CFLAGS = -m32 -g -std=c99 -Wall -Wextra -Werror -DDEBUG -DTEST -iquote ..
+VPATH = .. ../fs
 
 TESTS = test_string test_sprintf test_fs
 
@@ -8,7 +8,7 @@ TESTS = test_string test_sprintf test_fs
 test: $(TESTS)
 	for x in $^; do ./$$x; done
 
-test_fs: phony_block_dev.o phony_block_dev.h ../fs/block_dev.h
+test_fs: phony_block_dev.o phony_block_dev.h ../fs/block_dev.h fs.o fat.o
 
 test_string: string.o ../string.h
 

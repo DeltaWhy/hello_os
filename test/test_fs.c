@@ -4,6 +4,7 @@
 #include <assert.h>
 #include "phony_block_dev.h"
 #include "../fs/block_dev.h"
+#include "../fs/fs.h"
 
 void test_phony_block() {
     // does our phony block device work as expected?
@@ -28,8 +29,22 @@ void test_phony_block() {
     system("rm test_floppy1.img");
 }
 
+void test_fat() {
+    system("cp test_floppy.img test_floppy2.img");
+
+    block_dev_t *phony0 = init_phony_block("test_floppy2.img", "r+");
+    file_system_t *fs = fs_mount(phony0);
+
+    assert(fs != NULL);
+
+    assert(fs_unmount(fs));
+    phony_block_close();
+    system("rm test_floppy2.img");
+}
+
 int main() {
     test_phony_block();
+    test_fat();
 
     return 0;
 }

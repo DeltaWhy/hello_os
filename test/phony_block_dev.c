@@ -23,7 +23,7 @@ block_dev_t *init_phony_block(const char *path, const char *mode) {
     return &phony_block;
 }
     
-int phony_block_read(uint32_t id, uint32_t pos, char *buf, int count) {
+int phony_block_read(uint32_t id, uint32_t pos, void *buf, int count) {
     ((void)id);
     if (fseek(file, pos, SEEK_SET) != 0) {
         fprintf(stderr, "error reading phony_block_dev: %s\n", strerror(errno));
@@ -32,7 +32,7 @@ int phony_block_read(uint32_t id, uint32_t pos, char *buf, int count) {
     return (int)fread(buf, 1, count, file);
 }
 
-int phony_block_write(uint32_t id, uint32_t pos, char *buf, int count) {
+int phony_block_write(uint32_t id, uint32_t pos, void *buf, int count) {
     ((void)id);
     if (fseek(file, pos, SEEK_SET) != 0) {
         fprintf(stderr, "error writing phony_block_dev: %s\n", strerror(errno));
