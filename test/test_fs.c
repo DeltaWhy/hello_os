@@ -5,6 +5,9 @@
 #include "phony_block_dev.h"
 #include "../fs/block_dev.h"
 #include "../fs/fs.h"
+#include "../fs/fat.h"
+
+extern fat_info_t fat_infos[MAX_FILESYSTEMS];
 
 void test_phony_block() {
     // does our phony block device work as expected?
@@ -36,6 +39,8 @@ void test_fat() {
     file_system_t *fs = fs_mount(phony0);
 
     assert(fs != NULL);
+
+    printf("%11s\n", fat_infos[fs->id].root_dir[0].filename);
 
     assert(fs_unmount(fs));
     phony_block_close();
