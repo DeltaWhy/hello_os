@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
-BINUTILS=binutils-2.23.2
-GCC=gcc-4.8.2
+BINUTILS=binutils-2.25
+GCC=gcc-5.2.0
 
 # dependencies for debian/ubuntu
 if grep 'Debian' /etc/issue || grep 'Ubuntu' /etc/issue; then
