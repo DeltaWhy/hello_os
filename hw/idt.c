@@ -6,9 +6,9 @@ void init_idt() {
     for (unsigned int i = 0; i < sizeof(IDT); i++) {
         *(((char *)IDT)+i) = 0;
     }
-    set_idt_descriptor(0, _isr_1, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(0, _isr_0, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(1, _isr_1, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(2, _isr_2, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(2, _isr_2, 0x08, IDT_DPL0 | IDT_INT_32); //Intel reserved
     set_idt_descriptor(3, _isr_3, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(4, _isr_4, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(5, _isr_5, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
@@ -21,7 +21,7 @@ void init_idt() {
     set_idt_descriptor(12, _isr_12, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(13, _isr_13, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(14, _isr_14, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
-    set_idt_descriptor(15, _isr_15, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
+    set_idt_descriptor(15, _isr_15, 0x08, IDT_DPL0 | IDT_INT_32); //Intel reserved
     set_idt_descriptor(16, _isr_16, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(17, _isr_17, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);
     set_idt_descriptor(18, _isr_18, 0x08, IDT_DPL0 | IDT_INT_32 | IDT_PRESENT);

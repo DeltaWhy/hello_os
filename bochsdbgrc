@@ -1,1 +1,2 @@
+ldsym global "syms"
 continue
