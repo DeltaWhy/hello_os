@@ -13,7 +13,7 @@ mkdir -p cross
 cd cross
 [ -f $BINUTILS.tar.bz2 ] || wget ftp://ftp.gnu.org/gnu/binutils/$BINUTILS.tar.bz2
 [ -f $GCC.tar.bz2 ] || wget ftp://ftp.gnu.org/gnu/gcc/$GCC/$GCC.tar.bz2
-[ -d $BINUTILS ] || (tar xvf $BINUTILS.tar.bz2 && sed -i -e 's/@colophon/@@colophon/' -e 's/doc@cygnus.com/doc@@cygnus.com/' $BINUTILS/bfd/doc/bfd.texinfo)
+[ -d $BINUTILS ] || (tar xvf $BINUTILS.tar.bz2 && sed -i -e 's/doc@cygnus.com/doc@@cygnus.com/' $BINUTILS/bfd/doc/bfd.texinfo)
 [ -d $GCC ] || tar xvf $GCC.tar.bz2
 
 export PREFIX=/opt/cross

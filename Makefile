@@ -17,9 +17,12 @@ OBJS += $(patsubst %.s,%.o,$(shell find shell -name "*.s"))
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img
 
-.PHONY: test clean all
+.PHONY: test clean all run
 
 all: $(FLOPPY_IMG) syms
+
+run: all
+	bochs -q -rc bochsdbgrc; true
 
 $(FLOPPY_IMG): $(KERNELFN)
 	rm -f $@
