@@ -51,7 +51,7 @@ typedef struct mboot_info {
     mboot_module * mods_addr;
     uint32_t elf_section_num;
     uint32_t elf_section_size;
-    uint32_t elf_section_addr;
+    void * elf_section_addr;
     uint32_t elf_section_shndx;
     uint32_t mmap_length;
     mboot_mmap_entry * mmap_addr;

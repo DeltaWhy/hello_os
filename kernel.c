@@ -45,6 +45,8 @@ void kmain(uint32_t magic) {
         if (pmm_is_free((paddr_t)0xb8000)) panic("video ram is not reserved");
         print("initializing virtual memory manager...\n");
         init_vmm();
+        print("initializing symbol table...\n");
+        init_stacktrace();
         print("initializing timer...\n");
         init_timer(10);
 		enable_irq(0);
@@ -67,7 +69,7 @@ void panic(const char *err) {
     printf("%s\n", err);
     stacktrace();
     // magic breakpoint for bochs debugger
-    __asm__ __volatile__ ("xchg %bx, %bx");
+    bochsbrk();
     __asm__ __volatile__ ("cli");
     while (1) __asm__ ("hlt");
 }

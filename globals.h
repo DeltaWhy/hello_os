@@ -9,6 +9,12 @@
 #define wait()
 #endif
 
+#ifndef NDEBUG
+#define bochsbrk() __asm__ __volatile__ ("xchg %bx, %bx");
+#else
+#define bochsbrk()
+#endif
+
 void panic(const char *err);
 
 #endif
