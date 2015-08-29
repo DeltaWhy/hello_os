@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "globals.h"
 #include "mboot.h"
+#include "sprintf.h"
 #include "string.h"
 #include "hw/idt.h"
 #include "hw/keyboard.h"
@@ -26,11 +27,19 @@ void kmain(uint32_t magic) {
     }
 
 	kclear();
-        printf("kernel loaded at %p, ends at %p\n", kernel_start, kernel_end);
+        char printbuf[256];
+        snprintf(printbuf, 256, "kernel loaded at %p, ends at %p\n", kernel_start, kernel_end);
+        print(printbuf);
         print("initializing GDT...\n");
         init_gdt();
         print("initializing IDT...\n");
         init_idt();
+        print("initializing physical memory manager...\n");
+        init_pmm();
+        if (pmm_is_free((paddr_t)kernel_start) || pmm_is_free((paddr_t)kernel_end)) panic("kernel memory is not reserved");
+        if (pmm_is_free((paddr_t)0xb8000)) panic("video ram is not reserved");
+        print("initializing virtual memory manager...\n");
+        init_vmm();
 	print("initializing PICs...\n");
 	init_pics(0x20, 0x28);
         print("initializing keyboard...\n");
@@ -39,12 +48,6 @@ void kmain(uint32_t magic) {
         enable_irq(1);
         send_eoi(0);
         __asm__ __volatile__ ("sti");
-        print("initializing physical memory manager...\n");
-        init_pmm();
-        if (pmm_is_free((paddr_t)kernel_start) || pmm_is_free((paddr_t)kernel_end)) panic("kernel memory is not reserved");
-        if (pmm_is_free((paddr_t)0xb8000)) panic("video ram is not reserved");
-        print("initializing virtual memory manager...\n");
-        init_vmm();
         print("initializing symbol table...\n");
         init_stacktrace();
         print("initializing timer...\n");

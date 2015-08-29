@@ -1,7 +1,7 @@
 #include "sprintf.h"
 #include "string.h"
 #include "globals.h"
-#include "malloc.h"
+#include "mem/malloc.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
