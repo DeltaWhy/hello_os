@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 void test_basic() {
     char buf[1024];
@@ -216,6 +217,13 @@ void test_n() {
     assert(i == 3);
 }
 
+void test_asprintf() {
+    char *s;
+    asprintf(&s, "%s", "hello world");
+    assert(strcmp(s, "hello world") == 0);
+    free(s);
+}
+
 int main() {
     test_basic();
     test_char();
@@ -226,6 +234,7 @@ int main() {
     test_octhex();
     test_ptr();
     test_n();
+    test_asprintf();
 
     return 0;
 }

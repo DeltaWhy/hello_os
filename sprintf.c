@@ -1,6 +1,7 @@
 #include "sprintf.h"
 #include "string.h"
 #include "globals.h"
+#include "malloc.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -26,6 +27,25 @@ int snprintf(char *str, size_t size, const char *fmt, ...) {
 
 int vsprintf(char *str, const char *fmt, va_list ap) {
     return vsnprintf(str, SIZE_MAX, fmt, ap);
+}
+
+int asprintf(char **strp, const char *fmt, ...) {
+    va_list ap;
+    int i;
+    va_start(ap, fmt);
+    i = vasprintf(strp, fmt, ap);
+    va_end(ap);
+    return i;
+}
+
+int vasprintf(char **strp, const char *fmt, va_list ap) {
+    va_list ap2;
+    int i;
+    va_copy(ap2, ap);
+    i = vsnprintf(NULL, 0, fmt, ap2);
+    *strp = malloc(i+1);
+    vsprintf(*strp, fmt, ap);
+    return i;
 }
 
 #define FLAG_ALT 0x1
@@ -410,7 +430,9 @@ int vsnprintf(char *str, size_t size, const char *fmt, va_list ap) {
         }
         fmt++;
     }
-    if (status.n >= size) {
+    if (size == 0) {
+        // do nothing
+    } else if (status.n >= size) {
         str[size-1] = '\0';
     } else {
         str[status.n] = '\0';
