@@ -27,13 +27,7 @@ run: all
 $(FLOPPY_IMG): $(KERNELFN)
 	rm -f $@
 	cp grub_dos.img $@
-	mkdir -p floppy
-	sudo mount $@ floppy -o loop,umask=000
-	cp $< floppy/boot
-	sleep 1
-	sudo umount floppy
-	rmdir floppy
-
+	mcopy -i $@ $< ::boot
 
 $(KERNELFN): $(OBJS)
 	$(CC) $(CFLAGS) -T linker.ld -o $@ $^ $(LDFLAGS)
