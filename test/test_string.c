@@ -71,7 +71,7 @@ void test_memset() {
     char s[] = "aaaaaa";
     void *res;
 
-    res = memset(s, 'b', 0);
+    res = memset(s, 'b', 1-1);
     assert(res == s);
     assert(s[0] == 'a');
 

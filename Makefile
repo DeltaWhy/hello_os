@@ -13,6 +13,8 @@ OBJS += $(patsubst %.c,%.o,$(shell find mem -name "*.c"))
 OBJS += $(patsubst %.s,%.o,$(shell find mem -name "*.s"))
 OBJS += $(patsubst %.c,%.o,$(shell find shell -name "*.c"))
 OBJS += $(patsubst %.s,%.o,$(shell find shell -name "*.s"))
+OBJS += $(patsubst %.c,%.o,$(shell find task -name "*.c"))
+OBJS += $(patsubst %.s,%.o,$(shell find task -name "*.s"))
 
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img
