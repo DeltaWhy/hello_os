@@ -1,4 +1,6 @@
 .global loader                          # making entry point visible to linker
+.global stack_top
+.global stack_bottom
 
 # setting up the Multiboot header - see GRUB docs for details
 .set ALIGN,    1<<0                     # align loaded modules on page boundaries

@@ -34,6 +34,13 @@ enum MBOOT_FLAGS {
     MBOOT_FLAG_VBE_INFO = 0x800
 };
 
+typedef struct mboot_module {
+    void * mod_start;
+    void * mod_end;
+    char cmdline[0];
+    uint32_t pad;
+} mboot_module;
+
 typedef struct mboot_info {
     uint32_t flags;
     uint32_t mem_lo;
@@ -41,11 +48,11 @@ typedef struct mboot_info {
     uint32_t boot_device;
     char * cmd_line;
     uint32_t mods_count;
-    void * mods_addr;
-    uint32_t syms0;
-    uint32_t syms1;
-    uint32_t syms2;
-    uint32_t syms3;
+    mboot_module * mods_addr;
+    uint32_t elf_section_num;
+    uint32_t elf_section_size;
+    uint32_t elf_section_addr;
+    uint32_t elf_section_shndx;
     uint32_t mmap_length;
     mboot_mmap_entry * mmap_addr;
     uint32_t drives_length;

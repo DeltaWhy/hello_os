@@ -5,6 +5,7 @@
 #include "string.h"
 #include "hw/screen.h"
 #include "hw/pit.h"
+#include "mem/stacktrace.h"
 static builtin builtins[MAX_BUILTINS];
 static int num_builtins = 0;
 
@@ -134,6 +135,21 @@ static void heap(int argc, char **argv) {
 }
 builtin heap_builtin = {&heap, "heap", "Show size of the kernel heap."};
 
+void exit(void);
+static void shell_exit(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    exit();
+}
+builtin exit_builtin = {&shell_exit, "exit", "Shutdown the system."};
+
+static void test_stacktrace(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    stacktrace();
+}
+builtin stacktrace_builtin = {&test_stacktrace, "stacktrace", "Test the stacktrace function."};
+
 extern builtin bootinfo_builtin;
 extern builtin loadkeys_builtin;
 
@@ -149,6 +165,8 @@ void init_shell_builtins() {
     register_builtin(heap_builtin);
     register_builtin(timer_builtin);
 	register_builtin(shell_beep_builtin);
+        register_builtin(exit_builtin);
+        register_builtin(stacktrace_builtin);
 }
 
 

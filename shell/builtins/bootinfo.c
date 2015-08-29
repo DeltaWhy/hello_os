@@ -21,5 +21,15 @@ static void bootinfo(int argv, char **argc) {
         printf("        length=0x%.x%x type=%#x\n", e->len_hi, e->len_lo, e->type);
         e = (mboot_mmap_entry *)((uint32_t)e + e->size + 4);
     }
+    printf("Module count: %d, address: %p\n", boot_info->mods_count, boot_info->mods_addr);
+    for (unsigned int i=0; i < boot_info->mods_count; i++) {
+        mboot_module m = boot_info->mods_addr[i];
+        printf("Module:\n");
+        printf("    start=%p end=%p\n", m.mod_start, m.mod_end);
+    }
+    if (boot_info->flags & 0x20) {
+        printf("ELF section table:\n");
+        printf("    num=%d size=%d addr=%p shndx=%p\n", boot_info->elf_section_num, boot_info->elf_section_size, boot_info->elf_section_addr, boot_info->elf_section_shndx);
+    }
 }
 builtin bootinfo_builtin = {&bootinfo, "bootinfo", "Displays system information passed from the bootloader."};

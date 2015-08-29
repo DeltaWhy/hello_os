@@ -1,17 +1,18 @@
 #include <stdint.h>
 #include "globals.h"
-#include "string.h"
 #include "mboot.h"
-#include "hw/pic.h"
-#include "hw/port.h"
-#include "hw/keyboard.h"
-#include "hw/screen.h"
+#include "string.h"
 #include "hw/idt.h"
-#include "mem/gdt.h"
-#include "shell/shell.h"
-#include "mem/pmm.h"
-#include "mem/vmm.h"
+#include "hw/keyboard.h"
+#include "hw/pic.h"
 #include "hw/pit.h"
+#include "hw/port.h"
+#include "hw/screen.h"
+#include "mem/gdt.h"
+#include "mem/pmm.h"
+#include "mem/stacktrace.h"
+#include "mem/vmm.h"
+#include "shell/shell.h"
 void exit(void);
 
 extern const char kernel_start[];
@@ -64,6 +65,7 @@ void exit(void){
 void panic(const char *err) {
     cprint("KERNEL PANIC: ", 0x04);
     printf("%s\n", err);
+    stacktrace();
     // magic breakpoint for bochs debugger
     __asm__ __volatile__ ("xchg %bx, %bx");
     __asm__ __volatile__ ("cli");

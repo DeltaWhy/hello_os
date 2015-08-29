@@ -24,10 +24,10 @@ all: $(FLOPPY_IMG) syms
 run: all
 	bochs -q -rc bochsdbgrc; true
 
-$(FLOPPY_IMG): $(KERNELFN)
+$(FLOPPY_IMG): $(KERNELFN) syms
 	rm -f $@
 	cp grub_dos.img $@
-	mcopy -i $@ $< ::boot
+	mcopy -i $@ $^ ::boot
 
 $(KERNELFN): $(OBJS)
 	$(CC) $(CFLAGS) -T linker.ld -o $@ $^ $(LDFLAGS)
@@ -41,7 +41,7 @@ $(KERNELFN): $(OBJS)
 	$(CC) $(CFLAGS) -MD -o $@ -c $<
 
 syms: $(KERNELFN)
-	objdump -t $< | sed -nre 's/^([0-9a-f]+).*\s(\S+)$$/\1 \2/p' > $@
+	objdump -t $< | sed -nre 's/^([0-9a-f]+).*\s(\S+)$$/\1 \2/p' | sort > $@
 
 test:
 	@$(MAKE) -C test test
