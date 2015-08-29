@@ -57,4 +57,5 @@ extern void _isr_44();
 extern void _isr_45();
 extern void _isr_46();
 extern void _isr_47();
+void isr_panic(const char *err, registers_t regs);
 #endif

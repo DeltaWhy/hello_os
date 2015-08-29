@@ -75,3 +75,28 @@ void stacktrace(void) {
     }
     bochslog("\n");
 }
+
+void stacktrace_from(void *eip, void **ebp) {
+    printf("call stack:\n");
+    bochslog("call stack:\naddr2line -fspi -e kernel.elf ");
+    char str[11];
+    void *raddr = eip;
+    sprintf(str, "%p", raddr);
+    symbol *symp = symbols;
+    while (symp->addr > raddr || strlen(symp->name) == 0) symp++;
+    printf("    %p (%s+%#x)\n", raddr, symp->name, ((uintptr_t)raddr)-((uintptr_t)symp->addr));
+    bochslog(str);
+    bochslog(" ");
+    while (ebp < &stack_top && ebp >= &stack_bottom) {
+        char str[11];
+        void *raddr = ebp[1];
+        sprintf(str, "%p", raddr);
+        symbol *symp = symbols;
+        while (symp->addr > raddr || strlen(symp->name) == 0) symp++;
+        printf("    %p (%s+%#x)\n", raddr, symp->name, ((uintptr_t)raddr)-((uintptr_t)symp->addr));
+        bochslog(str);
+        bochslog(" ");
+        ebp = ebp[0];
+    }
+    bochslog("\n");
+}
