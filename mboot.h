@@ -41,18 +41,6 @@ typedef struct mboot_module {
     uint32_t pad;
 } mboot_module;
 
-typedef struct mboot_apm_table {
-    uint16_t version;
-    uint16_t cseg;
-    uint32_t offset;
-    uint16_t cseg_16;
-    uint16_t dseg_16;
-    uint16_t flags;
-    uint16_t cseg_len;
-    uint16_t cseg_16_len;
-    uint16_t dseg_16_len;
-} mboot_apm_table;
-
 typedef struct mboot_info {
     uint32_t flags;
     uint32_t mem_lo;
@@ -71,7 +59,7 @@ typedef struct mboot_info {
     void * drives_addr;
     uint32_t config_table;
     char * bootloader_name;
-    mboot_apm_table * apm_table;
+    uint32_t apm_table;
     uint32_t vbe_control_info;
     uint32_t vbe_mode_info;
     uint16_t vbe_mode;

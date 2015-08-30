@@ -6,7 +6,6 @@
 #include "hw/screen.h"
 #include "hw/pit.h"
 #include "mem/stacktrace.h"
-#include "hw/apm.h"
 static builtin builtins[MAX_BUILTINS];
 static int num_builtins = 0;
 
@@ -151,13 +150,6 @@ static void test_stacktrace(int argc, char **argv) {
 }
 builtin stacktrace_builtin = {&test_stacktrace, "stacktrace", "Test the stacktrace function."};
 
-static void shutdown(int argc, char **argv) {
-    UNUSED(argc);
-    UNUSED(argv);
-    apm_shutdown();
-}
-builtin shutdown_builtin = {&shutdown, "shutdown", "Do an APM power off."};
-
 extern builtin bootinfo_builtin;
 extern builtin loadkeys_builtin;
 
@@ -175,7 +167,6 @@ void init_shell_builtins() {
 	register_builtin(shell_beep_builtin);
         register_builtin(exit_builtin);
         register_builtin(stacktrace_builtin);
-        register_builtin(shutdown_builtin);
 }
 
 

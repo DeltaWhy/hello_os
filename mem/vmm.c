@@ -23,7 +23,6 @@ void init_vmm() {
 
     if ((paddr_t)kernel_start > 0x1fffff || (paddr_t)kernel_end > 0x1fffff) panic("kernel is too big or too high in RAM");
     vmm_identity_map((paddr_t)0, 512, VMM_PTE_FLAG_PRESENT | VMM_PTE_FLAG_WRITABLE); // identity map the first two MB of RAM
-    //vmm_identity_map((paddr_t)0xf0000, 65520/4096+1, VMM_PTE_FLAG_PRESENT);
 
     // load the pagedir
     __asm__ __volatile__("mov %0, %%cr3;"

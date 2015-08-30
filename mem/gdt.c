@@ -1,7 +1,4 @@
-#include "mem/gdt.h"
-#include "mboot.h"
-extern mboot_info *boot_info;
-
+#include "gdt.h"
 static gdt_descriptor create_descriptor(uint32_t base, uint32_t limit, uint16_t flag);
 
 void init_gdt(void) {
@@ -9,9 +6,6 @@ void init_gdt(void) {
             | ((uint32_t)GDT) << 16;*/
     GDT[1] = create_descriptor(0, 0xFFFFF, GDT_CODE_PL0);
     GDT[2] = create_descriptor(0, 0xFFFFF, GDT_DATA_PL0);
-    GDT[3] = create_descriptor(boot_info->apm_table->cseg<<4, boot_info->apm_table->cseg_len, SEG_DATA_RDWR | SEG_CODE_EX | SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_PRIV(0) | SEG_GRAN(1) | SEG_SIZE(1));
-    GDT[4] = create_descriptor(boot_info->apm_table->cseg_16<<4, boot_info->apm_table->cseg_16_len, SEG_DATA_RDWR | SEG_CODE_EX | SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_PRIV(0) | SEG_GRAN(1) | SEG_SIZE(0));
-    GDT[5] = create_descriptor(boot_info->apm_table->dseg_16<<4, boot_info->apm_table->dseg_16_len, SEG_DATA_RDWR | SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_PRIV(0) | SEG_GRAN(1) | SEG_SIZE(1));
     setGdt(GDT, sizeof(GDT));
     reloadSegments();
 }
