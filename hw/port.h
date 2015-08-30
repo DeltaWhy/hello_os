@@ -8,7 +8,8 @@
 #endif
 
 void outportb(unsigned port, unsigned val);
-
 unsigned inportb(unsigned short port);
+void outportw(unsigned port, unsigned val);
+unsigned inportw(unsigned short port);
 
 #endif

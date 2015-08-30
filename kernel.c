@@ -3,6 +3,7 @@
 #include "mboot.h"
 #include "sprintf.h"
 #include "string.h"
+#include "hw/acpi.h"
 #include "hw/idt.h"
 #include "hw/keyboard.h"
 #include "hw/pic.h"
@@ -54,7 +55,8 @@ void kmain(uint32_t magic) {
         init_timer(10);
 		enable_irq(0);
 		print("initializing speaker...\n");
-			
+        print("initializing ACPI...\n");
+        init_acpi();
         print("initializing shell...\n");
         init_shell_builtins();
 	beep(100, 100);
