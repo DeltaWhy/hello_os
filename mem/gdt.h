@@ -47,7 +47,7 @@
  
 typedef uint64_t gdt_descriptor;
 
-#define GDT_ENTRIES 3
+#define GDT_ENTRIES 6
 gdt_descriptor GDT[GDT_ENTRIES];
 
 void setGdt(void *ptr, uint16_t size);

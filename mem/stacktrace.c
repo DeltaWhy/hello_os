@@ -21,7 +21,7 @@ size_t num_symbols;
 symbol *symbols;
 
 void init_stacktrace(void) {
-    assert(boot_info->flags & 0x20);
+    assert(boot_info->flags & MBOOT_FLAG_ELF_SHDR);
     assert(boot_info->elf_section_size == sizeof(elf_sect_header));
     elf_sect_header *sect_table = boot_info->elf_section_addr;
     elf_sect_header *shstr = sect_table + boot_info->elf_section_shndx;
