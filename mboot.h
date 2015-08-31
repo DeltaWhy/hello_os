@@ -67,4 +67,6 @@ typedef struct mboot_info {
     uint16_t vbe_interface_off;
     uint16_t vbe_interface_len;
 } mboot_info;
+
+extern mboot_info *boot_info;
 #endif

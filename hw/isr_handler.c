@@ -16,6 +16,9 @@ void isr_handler(registers_t regs)
             // GPF
             isr_panic("General protection fault", regs);
             break;
+        case 14:
+            isr_panic("Page fault", regs);
+            break;
         case 32:
             // timer
             // are we really sure this should be 32?

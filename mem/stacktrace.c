@@ -11,17 +11,16 @@
 #include "task/elf.h"
 extern void * stack_top;
 extern void * stack_bottom;
-extern mboot_info *boot_info;
 
 typedef struct symbol {
     void * addr;
     char * name;
 } symbol;
 size_t num_symbols;
-symbol *symbols;
+symbol *symbols = NULL;
 
 void init_stacktrace(void) {
-    assert(boot_info->flags & 0x20);
+    if (!(boot_info->flags & MBOOT_FLAG_ELF_SHDR)) return;
     assert(boot_info->elf_section_size == sizeof(elf_sect_header));
     elf_sect_header *sect_table = boot_info->elf_section_addr;
     elf_sect_header *shstr = sect_table + boot_info->elf_section_shndx;
@@ -66,9 +65,14 @@ void stacktrace(void) {
         char str[11];
         void *raddr = ebp[1];
         sprintf(str, "%p", raddr);
-        symbol *symp = symbols;
-        while (symp->addr > raddr || strlen(symp->name) == 0) symp++;
-        printf("    %p (%s+%#x)\n", raddr, symp->name, ((uintptr_t)raddr)-((uintptr_t)symp->addr));
+        printf("    %p", raddr);
+        if (symbols != NULL) {
+            symbol *symp = symbols;
+            while (symp->addr > raddr || strlen(symp->name) == 0) symp++;
+            printf(" (%s+%#x)\n", symp->name, ((uintptr_t)raddr)-((uintptr_t)symp->addr));
+        } else {
+            print("\n");
+        }
         bochslog(str);
         bochslog(" ");
         ebp = ebp[0];

@@ -159,6 +159,7 @@ static void shutdown(int argc, char **argv) {
 builtin shutdown_builtin = {&shutdown, "shutdown", "Do an ACPI shutdown."};
 
 extern builtin bootinfo_builtin;
+extern builtin memmap_builtin;
 extern builtin loadkeys_builtin;
 
 void init_shell_builtins() {
@@ -169,6 +170,7 @@ void init_shell_builtins() {
     register_builtin(crash_builtin);
     register_builtin(panic_builtin);
     register_builtin(bootinfo_builtin);
+    register_builtin(memmap_builtin);
     register_builtin(loadkeys_builtin);
     register_builtin(heap_builtin);
     register_builtin(timer_builtin);

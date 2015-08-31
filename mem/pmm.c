@@ -2,7 +2,6 @@
 #include "globals.h"
 #include "mem/pmm.h"
 #include "mboot.h"
-extern mboot_info *boot_info;
 
 // 4GB address space / 4KB page size == 1M pages
 #define MMAP_LENGTH 1024*1024/32

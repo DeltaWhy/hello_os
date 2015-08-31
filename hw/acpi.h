@@ -75,5 +75,6 @@ typedef struct acpi_fadt {
 } acpi_fadt;
 
 void init_acpi(void);
+void acpi_reclaim_memory(void);
 void acpi_shutdown(void);
 #endif

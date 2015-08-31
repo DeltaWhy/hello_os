@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "hw/screen.h"
 #include "assert.h"
+#include "mboot.h"
 
 #define PD_INDEX(addr) (((addr) >> 22) & 0x3ff)
 #define PT_INDEX(addr) (((addr) >> 12) & 0x3ff)
@@ -23,7 +24,19 @@ void init_vmm() {
 
     if ((paddr_t)kernel_start > 0x1fffff || (paddr_t)kernel_end > 0x1fffff) panic("kernel is too big or too high in RAM");
     vmm_identity_map((paddr_t)0, 512, VMM_PTE_FLAG_PRESENT | VMM_PTE_FLAG_WRITABLE); // identity map the first two MB of RAM
-    vmm_identity_map((paddr_t)0x1ff0000, 0x10000/4096, VMM_PTE_FLAG_PRESENT);
+
+    // identity map reserved areas - needed for ACPI
+    mboot_mmap_entry *e = boot_info->mmap_addr;
+    for (; ((uint32_t)e) < ((uint32_t)boot_info->mmap_addr) + boot_info->mmap_length;
+            e = (mboot_mmap_entry *)((uint32_t)e + e->size + 4)) {
+        if (e->type != MBOOT_MMAP_TYPE_RESERVED && e->type != MBOOT_MMAP_TYPE_ACPI_RECLAIMABLE) continue;
+        // we're 32 bits so we ignore memory above 4GB
+        if (e->addr_hi != 0 || e->len_hi != 0) continue;
+        // skip anything we've already mapped
+        if (e->addr_lo < 0x200000) continue;
+
+        vmm_identity_map((paddr_t)e->addr_lo, e->len_lo >> 12, VMM_PTE_FLAG_PRESENT);
+    }
 
     // load the pagedir
     __asm__ __volatile__("mov %0, %%cr3;"

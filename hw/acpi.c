@@ -5,12 +5,21 @@
 #include "hw/acpi.h"
 #include "hw/port.h"
 #include "hw/screen.h"
+#include "mboot.h"
+#include "mem/vmm.h"
+#include "mem/pmm.h"
+
 acpi_rsd *rsdp = NULL;
 acpi_sdt *rsdt = NULL;
 int num_sdts;
 acpi_sdt **sdts;
 acpi_fadt *fadt;
 acpi_sdt *dsdt;
+
+uint32_t PM1aControlBlock;
+uint32_t PM1bControlBlock;
+uint32_t SMI_CommandPort;
+uint8_t AcpiEnable;
 uint16_t slp_typa;
 uint16_t slp_typb;
 bool can_acpi_shutdown = false;
@@ -46,18 +55,20 @@ void init_acpi(void) {
         }
     }
 
-    if (rsdp != NULL) {
-        // check the checksum
-        int sum = 0;
-        unsigned char *p = (unsigned char *)rsdp;
-        for (unsigned int i=0; i < sizeof(acpi_rsd); i++) {
-            sum += p[i];
-        }
-        if ((sum & 0xFF) != 0) {
-            print("found ACPI RSD signature but checksum was invalid\n");
-            rsdp = NULL;
-            return;
-        }
+    if (rsdp == NULL) {
+        print("no ACPI RSD PTR found\n");
+        return;
+    }
+    // check the checksum
+    int sum = 0;
+    unsigned char *p = (unsigned char *)rsdp;
+    for (unsigned int i=0; i < sizeof(acpi_rsd); i++) {
+        sum += p[i];
+    }
+    if ((sum & 0xFF) != 0) {
+        print("found ACPI RSD signature but checksum was invalid\n");
+        rsdp = NULL;
+        return;
     }
 
     rsdt = rsdp->rsdt_addr;
@@ -84,6 +95,11 @@ void init_acpi(void) {
         fadt = NULL;
         return;
     }
+
+    PM1aControlBlock = fadt->PM1aControlBlock;
+    PM1bControlBlock = fadt->PM1bControlBlock;
+    SMI_CommandPort = fadt->SMI_CommandPort;
+    AcpiEnable = fadt->AcpiEnable;
 
     dsdt = fadt->dsdt_addr;
     if (!acpi_checksum(dsdt)) {
@@ -121,26 +137,41 @@ void init_acpi(void) {
     can_acpi_shutdown = true;
 }
 
+void acpi_reclaim_memory(void) {
+    mboot_mmap_entry *e = boot_info->mmap_addr;
+    for (; ((uint32_t)e) < ((uint32_t)boot_info->mmap_addr) + boot_info->mmap_length;
+            e = (mboot_mmap_entry *)((uint32_t)e + e->size + 4)) {
+        if (e->type != MBOOT_MMAP_TYPE_ACPI_RECLAIMABLE) continue;
+        if (e->addr_hi != 0 || e->len_hi != 0) continue;
+        if (e->addr_lo < 0x200000) continue;
+        vaddr_t p = e->addr_lo;
+        for (unsigned int i=0; i < (e->len_lo >> 12); i++) {
+            vmm_free_page(p);
+            p += 4096;
+        }
+    }
+}
+
 void acpi_enable(void) {
    // check if acpi is enabled
-   if ( (inportw((unsigned int) fadt->PM1aControlBlock) & 1) == 0 )
+   if ( (inportw((unsigned int) PM1aControlBlock) & 1) == 0 )
    {
       // check if acpi can be enabled
-      if (fadt->SMI_CommandPort != 0 && fadt->AcpiEnable != 0)
+      if (SMI_CommandPort != 0 && AcpiEnable != 0)
       {
-         outportb(fadt->SMI_CommandPort, fadt->AcpiEnable); // send acpi enable command
+         outportb(SMI_CommandPort, AcpiEnable); // send acpi enable command
          // give 3 seconds time to enable acpi
          int i;
          for (i=0; i<300; i++ )
          {
-            if ( (inportw((unsigned int) fadt->PM1aControlBlock) & 1) == 1 )
+            if ( (inportw((unsigned int) PM1aControlBlock) & 1) == 1 )
                break;
             //sleep(10);
          }
-         if (fadt->PM1bControlBlock != 0)
+         if (PM1bControlBlock != 0)
             for (; i<300; i++ )
             {
-               if ( (inportw((unsigned int) fadt->PM1bControlBlock) & 1) == 1 )
+               if ( (inportw((unsigned int) PM1bControlBlock) & 1) == 1 )
                   break;
                //sleep(10);
             }
@@ -167,9 +198,9 @@ void acpi_shutdown(void) {
         return;
     }
     acpi_enable();
-    outportw(fadt->PM1aControlBlock, slp_typa | (1<<13));
-    if (fadt->PM1bControlBlock != 0) {
-        outportw(fadt->PM1bControlBlock, slp_typb | (1<<13));
+    outportw(PM1aControlBlock, slp_typa | (1<<13));
+    if (PM1bControlBlock != 0) {
+        outportw(PM1bControlBlock, slp_typb | (1<<13));
     }
     print("ACPI shutdown failed.\n");
 }
