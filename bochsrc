@@ -11,7 +11,6 @@ floppya: 1_44=floppy.img, status=inserted
 boot: a
 
 log: bochs.log
-magic_break: enabled=1
 
 #clock: sync=both
 speaker: enabled=1, mode=sound

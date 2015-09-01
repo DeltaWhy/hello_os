@@ -1,4 +1,4 @@
-PATH := $(PATH):/opt/cross/bin
+PATH := /opt/cross/bin:$(PATH)
 AS = i586-elf-as
 CC = i586-elf-gcc
 CFLAGS = -std=c99 -g -Wall -Wextra -Werror -ffreestanding -nostdlib -nostartfiles -nodefaultlibs -I.
@@ -19,14 +19,17 @@ OBJS += $(patsubst %.s,%.o,$(shell find task -name "*.s"))
 KERNELFN = kernel.elf
 FLOPPY_IMG = floppy.img
 
-.PHONY: test clean all run
+.PHONY: test clean all run debug
 
 all: $(FLOPPY_IMG) syms
 
 run: all
-	bochs -q -rc bochsdbgrc; true
+	bochs -q; true
 
-$(FLOPPY_IMG): $(KERNELFN) syms
+debug: all
+	bochs -q 'gdbstub: enabled=1'; true
+
+$(FLOPPY_IMG): $(KERNELFN)
 	rm -f $@
 	cp grub_dos.img $@
 	mcopy -i $@ $^ ::boot
