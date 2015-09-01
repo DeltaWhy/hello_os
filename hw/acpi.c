@@ -72,6 +72,7 @@ void init_acpi(void) {
     }
 
     rsdt = rsdp->rsdt_addr;
+    printf("rsdt=%p length=%#x\n", rsdt, rsdt->length);
     if (!acpi_checksum(rsdt)) {
         print("found ACPI RSDT but checksum was invalid\n");
         rsdt = NULL;

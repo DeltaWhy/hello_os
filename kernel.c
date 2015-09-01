@@ -55,14 +55,14 @@ void kmain(uint32_t magic) {
         init_timer(10);
 		enable_irq(0);
 		print("initializing speaker...\n");
-        /*print("initializing ACPI...\n");
+        print("initializing ACPI...\n");
         init_acpi();
         print("reclaiming ACPI memory...\n");
-        acpi_reclaim_memory();*/
+        acpi_reclaim_memory();
         print("initializing shell...\n");
         init_shell_builtins();
 	beep(100, 100);
-	cprint("Hello OS\n", 2); 
+	cprint("Hello OS\n", 2);
 	update_cursor();
         shell();
 }

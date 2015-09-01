@@ -34,7 +34,6 @@ void init_vmm() {
         if (e->addr_hi != 0 || e->len_hi != 0) continue;
         // skip anything we've already mapped
         if (e->addr_lo < 0x200000) continue;
-
         vmm_identity_map((paddr_t)e->addr_lo, e->len_lo >> 12, VMM_PTE_FLAG_PRESENT);
     }
 

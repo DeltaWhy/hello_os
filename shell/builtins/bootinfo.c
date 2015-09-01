@@ -42,9 +42,7 @@ static void memmap(int argv, char **argc) {
         printf("Memory map:\n");
         mboot_mmap_entry *e = boot_info->mmap_addr;
         while (((uint32_t)e) < ((uint32_t)boot_info->mmap_addr) + boot_info->mmap_length) {
-            printf("    %p\n", e);
-            printf("    Entry size=%d base=0x%.x%.8x\n", e->size, e->addr_hi, e->addr_lo);
-            printf("        length=0x%.x%x type=%#x\n", e->len_hi, e->len_lo, e->type);
+            printf("    Entry size=%d base=0x%.x%.8x length=0x%.x%x type=%#x\n", e->size, e->addr_hi, e->addr_lo, e->len_hi, e->len_lo, e->type);
             e = (mboot_mmap_entry *)((uint32_t)e + e->size + 4);
         }
     } else {

@@ -37,7 +37,10 @@ void init_pmm() {
     mmap[0] |= 0x1;
 
     // mark kernel memory as reserved so we don't accidentally overwrite it
-    pmm_reserve_frames((paddr_t)kernel_start, ((kernel_end-kernel_start)>>12)+1);
+    pmm_reserve_range((paddr_t)kernel_start, (paddr_t)kernel_end);
+    // mark multiboot info as reserved
+    pmm_reserve_range((paddr_t)boot_info, ((paddr_t)boot_info)+sizeof(mboot_info));
+    pmm_reserve_range((paddr_t)boot_info->mmap_addr, ((paddr_t)boot_info->mmap_addr)+boot_info->mmap_length);
 }
 
 paddr_t pmm_alloc_frames(int n) {
@@ -107,6 +110,10 @@ void pmm_reserve_frames(paddr_t addr, int n) {
         if (j == 0) i++;
         n--;
     }
+}
+
+void pmm_reserve_range(paddr_t start, paddr_t end) {
+    pmm_reserve_frames(start, ((end-start)>>12)+1);
 }
 
 bool pmm_is_free(paddr_t addr) {
