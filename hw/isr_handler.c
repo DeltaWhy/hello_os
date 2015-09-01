@@ -7,6 +7,7 @@
 #include "mem/stacktrace.h"
 void isr_handler(registers_t regs)
 {
+    void *cr2;
     switch(regs.int_no) {
         case 0:
             // DIV0
@@ -17,6 +18,9 @@ void isr_handler(registers_t regs)
             isr_panic("General protection fault", regs);
             break;
         case 14:
+            __asm__ ("movl %%cr2, %0"
+                    : "=a"(cr2));
+            printf("cr2=%p\n", cr2);
             isr_panic("Page fault", regs);
             break;
         case 32:
@@ -50,11 +54,11 @@ void isr_panic(const char *err, registers_t regs) {
             "    ebp=%#.8x\n"
             "    esi=%#.8x\n"
             "    edi=%#.8x\n"
-            "    cs=%#x ds=%#x ss=%#x\n"
+            "    cs=%#x ds=%#x\n"
             "    eflags=%#.8x\n"
             "    eip=%#.8x\n",
             regs.eax, regs.ebx, regs.ecx, regs.edx, regs.esp, regs.ebp,
-            regs.esi, regs.edi, regs.cs, regs.ds, regs.ss, regs.eflags, regs.eip);
+            regs.esi, regs.edi, regs.cs, regs.ds, regs.eflags, regs.eip);
     stacktrace_from((void*)regs.eip, (void**)regs.ebp);
     bochsbrk();
     __asm__ __volatile__ ("cli");

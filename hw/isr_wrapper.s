@@ -70,6 +70,7 @@ ISR_NOERRCODE 47
 .global _isr_common_stub
 _isr_common_stub:
     pusha
+    xor eax, eax
     mov ax, ds
     push eax
     mov ax, 0x10
